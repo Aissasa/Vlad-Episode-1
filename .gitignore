@@ -1,3 +1,15 @@
 Library/
 ProjectSettings/
 Temp/
+*.htm
+Assets/Characters/Knight/.DS_Store
+Assets/Characters/Knight/._.DS_Store
+Assets/Characters/Knight/._info.xls
+*.DS_Store
+*.xls
+Assets/Tiled2Unity/Imported/_ReadMe.txt
+Assets/Tiled2Unity/Materials/_ReadMe.txt
+.txt
+Assets/Tiled2Unity/Meshes/_ReadMe.txt
+Assets/Tiled2Unity/Prefabs/_ReadMe.txt
+Assets/Tiled2Unity/Textures/_ReadMe.txt
