@@ -54,8 +54,11 @@ public class PlayerControl : MonoBehaviour
             _animator.SetBool("walking", false);
 
         //either one press or continuous press trigger the attack
-        if (Input.GetButtonDown("Attack") || Input.GetButton("Attack"))
+        if (Input.GetButton("Attack"))
             _animator.SetTrigger("attacking");
+
+        if (Input.GetButtonUp("Attack"))
+            _animator.ResetTrigger("attacking");
     }
 
     // use the same animations, just flip the sprite
