@@ -1,0 +1,1 @@
+This project is a 2D game prototype made by Unity3D (Version 5.3)
