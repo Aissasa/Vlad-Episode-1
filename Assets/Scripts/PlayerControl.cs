@@ -14,8 +14,7 @@ public class PlayerControl : MonoBehaviour
     [SerializeField]
     bool _isFacing_Right;
     [SerializeField]
-    bool _able_to_walk; // bool to stop the mouvement in the attacking animation
-
+    bool _attacking;  // bool to stop the mouvement in the attacking animation
 
     void Start()
     {
@@ -28,21 +27,21 @@ public class PlayerControl : MonoBehaviour
         // this is used to insure having the same speed in all the directions
         _player_lateral_speed = _player_speed / Mathf.Sqrt(2);
         _isFacing_Right = true;
-        _able_to_walk = true;
+        _attacking = true;
     }
 
     void Update()
     {
-        // stop mouvement if the attack animation is on
+        // stops mouvement if the attack animation is on
         if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
-            _able_to_walk = false;
+            _attacking = false;
         else
-            _able_to_walk = true;
+            _attacking = true;
 
         Vector2 mouvement_vector = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
-        //check if there is mouvement or no attack animation is on, then move
-        if (mouvement_vector != Vector2.zero && _able_to_walk)
+        //checks if there is mouvement or no attack animation is on, then move
+        if (mouvement_vector != Vector2.zero && _attacking)
         {
             _player_lateral_speed = _player_speed / Mathf.Sqrt(2);
             if ((mouvement_vector.x > 0 && !_isFacing_Right) || (mouvement_vector.x < 0 && _isFacing_Right))
@@ -53,7 +52,7 @@ public class PlayerControl : MonoBehaviour
         else
             _animator.SetBool("walking", false);
 
-        //either one press or continuous press trigger the attack
+        //either with one press or continuous press trigger the attack
         if (Input.GetButton("Attack"))
             _animator.SetTrigger("attacking");
 
@@ -61,7 +60,7 @@ public class PlayerControl : MonoBehaviour
             _animator.ResetTrigger("attacking");
     }
 
-    // use the same animations, just flip the sprite
+    // uses the same animations, just flip the sprite
     void flip()
     {
         _isFacing_Right = !_isFacing_Right;
@@ -71,7 +70,7 @@ public class PlayerControl : MonoBehaviour
 
     }
 
-    //adjust the speed to the type of mouvement (lateral or horizontal/vertical)
+    //to adjust the speed to the type of mouvement (lateral or horizontal/vertical)
     void move(Vector2 mouvement_vector)
     {
         if (mouvement_vector.x * mouvement_vector.y == 0)
@@ -79,4 +78,5 @@ public class PlayerControl : MonoBehaviour
         else
             _rb2d.MovePosition(_rb2d.position + mouvement_vector * Time.deltaTime * _player_lateral_speed);
     }
+
 }

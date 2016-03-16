@@ -6,6 +6,8 @@ public class CameraController : MonoBehaviour
 
 
     Transform _player;
+    Vector3 _first_position;
+
     Camera _cam;
     [SerializeField]
     float _cam_scale;
@@ -16,9 +18,12 @@ public class CameraController : MonoBehaviour
     void Awake()
     {
         _player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+        _first_position = GameObject.FindGameObjectWithTag("FirstPosition").GetComponent<Transform>().position;
+
         _cam = GetComponent<Camera>();
 
-        transform.position = _player.position;
+
+        transform.position = _first_position;
         _cam_scale = 3f;
         _cam_lerp_speed = 0.1f;
     }
