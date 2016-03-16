@@ -45,9 +45,9 @@ public class PlayerControl : MonoBehaviour
         {
             _player_lateral_speed = _player_speed / Mathf.Sqrt(2);
             if ((mouvement_vector.x > 0 && !_isFacing_Right) || (mouvement_vector.x < 0 && _isFacing_Right))
-                flip();
+                Flip();
             _animator.SetBool("walking", true);
-            move(mouvement_vector);
+            Move(mouvement_vector);
         }
         else
             _animator.SetBool("walking", false);
@@ -61,7 +61,7 @@ public class PlayerControl : MonoBehaviour
     }
 
     // uses the same animations, just flip the sprite
-    void flip()
+    void Flip()
     {
         _isFacing_Right = !_isFacing_Right;
         Vector3 theScale = transform.localScale;
@@ -71,7 +71,7 @@ public class PlayerControl : MonoBehaviour
     }
 
     //to adjust the speed to the type of mouvement (lateral or horizontal/vertical)
-    void move(Vector2 mouvement_vector)
+    void Move(Vector2 mouvement_vector)
     {
         if (mouvement_vector.x * mouvement_vector.y == 0)
             _rb2d.MovePosition(_rb2d.position + mouvement_vector * Time.deltaTime * _player_speed);
