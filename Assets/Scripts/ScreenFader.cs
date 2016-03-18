@@ -4,45 +4,45 @@ using System.Collections;
 public class ScreenFader : MonoBehaviour
 {
 
+    Animator animator;
+    bool isFading;
 
-    Animator _animator;
-    [SerializeField]
-    bool _is_Fading;
+    string fadeInTrigger = "fadingIn";
+    string fadeOutTrigger = "fadingOut";
 
     void Start()
     {
 
-        _animator = GetComponent<Animator>();
-        _is_Fading = false;
+        animator = GetComponent<Animator>();
+        isFading = false;
     }
 
-    void Update()
+    public void AnimationComplete()
     {
-
-
-    }
-
-    public IEnumerator FadeOutCoroutine()
-    {
-        _is_Fading = true;
-        _animator.SetTrigger("fade_out");
-
-        while (_is_Fading)
-            yield return null;
+        isFading = false;
     }
 
     public IEnumerator FadeInCoroutine()
     {
-        _is_Fading = true;
-        _animator.SetTrigger("fade_in");
+        isFading = true;
+        animator.SetTrigger(fadeInTrigger);
 
-        while (_is_Fading)
+        while (isFading)
+        {
             yield return null;
+        }
     }
 
-
-    public void AnimationComplete()
+    public IEnumerator FadeOutCoroutine()
     {
-        _is_Fading = false;
+        isFading = true;
+        animator.SetTrigger(fadeOutTrigger);
+
+        while (isFading)
+        {
+            yield return null;
+        }
     }
+
+
 }

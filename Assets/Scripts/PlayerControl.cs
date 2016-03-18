@@ -3,80 +3,125 @@ using System.Collections;
 
 public class PlayerControl : MonoBehaviour
 {
-    Rigidbody2D _rb2d;
-    Animator _animator;
+    Rigidbody2D rb2d;
+    Animator animator;
+
+    enum animationState
+    {
+        Idle,
+        Walk,
+        Attack,
+        Dead
+    }
+
     // the position of first spawn
-    Vector3 _first_position;
-    [SerializeField]
-    float _player_lateral_speed; // speed for lateral mouvement
-    [SerializeField]
-    float _player_speed; // speed for normal mouvement
-    [SerializeField]
-    bool _isFacing_Right;
-    [SerializeField]
-    bool _attacking;  // bool to stop the mouvement in the attacking animation
+    Vector3 firstPosition;
+    float playerLateralSpeed; // speed for lateral mouvement
+    float playerSpeed; // speed for normal mouvement
+    bool isFacingRight;
+    bool isAttacking;  // bool to stop the mouvement in the attacking animation
+
+    // animator's triggers and bools names
+    string attackingAnimationTrigger = "attacking";
+    string dyingAnimationTrigger = "dying";
+    string walkingAnimationBool = "walking";
 
     void Start()
     {
-        _first_position = GameObject.FindGameObjectWithTag("FirstPosition").GetComponent<Transform>().position;
-        _rb2d = GetComponent<Rigidbody2D>();
-        _animator = GetComponent<Animator>();
+        firstPosition = GameObject.FindGameObjectWithTag("FirstPosition").GetComponent<Transform>().position;
+        rb2d = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
 
-        transform.position = _first_position;
-        _player_speed = 1.5f;
+        transform.position = firstPosition;
+        playerSpeed = 1.5f;
         // this is used to insure having the same speed in all the directions
-        _player_lateral_speed = _player_speed / Mathf.Sqrt(2);
-        _isFacing_Right = true;
-        _attacking = true;
+        playerLateralSpeed = playerSpeed / Mathf.Sqrt(2);
+        isFacingRight = true;
+        isAttacking = false;
     }
 
     void Update()
     {
         // stops mouvement if the attack animation is on
-        if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
-            _attacking = false;
-        else
-            _attacking = true;
-
-        Vector2 mouvement_vector = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-
-        //checks if there is mouvement or no attack animation is on, then move
-        if (mouvement_vector != Vector2.zero && _attacking)
+        if (GetAnimationState() == animationState.Attack)
         {
-            _player_lateral_speed = _player_speed / Mathf.Sqrt(2);
-            if ((mouvement_vector.x > 0 && !_isFacing_Right) || (mouvement_vector.x < 0 && _isFacing_Right))
-                Flip();
-            _animator.SetBool("walking", true);
-            Move(mouvement_vector);
+            isAttacking = false;
         }
         else
-            _animator.SetBool("walking", false);
+        {
+            isAttacking = true;
+        }
+
+        Vector2 mouvementVector = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+
+        if (isAttacking && Vector2.zero != mouvementVector)
+        {
+            playerLateralSpeed = playerSpeed / Mathf.Sqrt(2);
+            if ((mouvementVector.x > 0 && !isFacingRight) || (mouvementVector.x < 0 && isFacingRight))
+            {
+                Flip();
+            }
+            animator.SetBool(walkingAnimationBool, true);
+            Move(mouvementVector);
+        }
+        else
+        {
+            animator.SetBool(walkingAnimationBool, false);
+        }
 
         //either with one press or continuous press trigger the attack
         if (Input.GetButton("Attack"))
-            _animator.SetTrigger("attacking");
+        {
+            animator.SetTrigger(attackingAnimationTrigger);
+        }
 
         if (Input.GetButtonUp("Attack"))
-            _animator.ResetTrigger("attacking");
+        {
+            animator.ResetTrigger(attackingAnimationTrigger);
+        }
     }
 
     // uses the same animations, just flip the sprite
     void Flip()
     {
-        _isFacing_Right = !_isFacing_Right;
+        isFacingRight = !isFacingRight;
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;
-
     }
 
     //to adjust the speed to the type of mouvement (lateral or horizontal/vertical)
     void Move(Vector2 mouvement_vector)
     {
         if (mouvement_vector.x * mouvement_vector.y == 0)
-            _rb2d.MovePosition(_rb2d.position + mouvement_vector * Time.deltaTime * _player_speed);
+        {
+            rb2d.MovePosition(rb2d.position + mouvement_vector * Time.deltaTime * playerSpeed);
+        }
         else
-            _rb2d.MovePosition(_rb2d.position + mouvement_vector * Time.deltaTime * _player_lateral_speed);
+        {
+            rb2d.MovePosition(rb2d.position + mouvement_vector * Time.deltaTime * playerLateralSpeed);
+        }
+    }
+
+    animationState GetAnimationState()
+    {
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+        {
+            return animationState.Attack;
+        }
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Walk"))
+        {
+            return animationState.Walk;
+        }
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Dead"))
+        {
+            return animationState.Dead;
+        }
+        else
+        {
+            return animationState.Idle;
+        }
+
     }
 
 }
