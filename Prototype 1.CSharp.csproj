@@ -80,8 +80,13 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\A Star\TestScript.cs" />
     <Compile Include="Assets\Scripts\CameraController.cs" />
-    <Compile Include="Assets\Scripts\PlayerControl.cs" />
+    <Compile Include="Assets\Scripts\EnemyController.cs" />
+    <Compile Include="Assets\Scripts\GenericCharacterController.cs" />
+    <Compile Include="Assets\Scripts\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\RenderingManager.cs" />
     <Compile Include="Assets\Scripts\ScreenFader.cs" />
+    <Compile Include="Assets\Scripts\Util\PositionComparer.cs" />
+    <Compile Include="Assets\Scripts\Util\Singleton.cs" />
     <Compile Include="Assets\Scripts\Warper.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\ImportBehaviour.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\SortingLayerExposed.cs" />

@@ -14,7 +14,7 @@ public class Warper : MonoBehaviour {
     IEnumerator OnTriggerEnter2D(Collider2D other)
     {
         // stop any mouvement and animations
-        other.gameObject.GetComponent<PlayerControl>().enabled = false;
+        other.gameObject.GetComponent<PlayerController>().enabled = false;
         other.gameObject.GetComponent<Animator>().enabled = false;
 
         ScreenFader screenFader = GameObject.FindGameObjectWithTag(screenFaderTag).GetComponent<ScreenFader>();
@@ -28,7 +28,7 @@ public class Warper : MonoBehaviour {
 
         // enable mouvements and animations
         other.gameObject.GetComponent<Animator>().enabled = true;
-        other.gameObject.GetComponent<PlayerControl>().enabled = true;
+        other.gameObject.GetComponent<PlayerController>().enabled = true;
 
     }
 

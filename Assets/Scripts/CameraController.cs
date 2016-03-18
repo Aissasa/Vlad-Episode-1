@@ -11,7 +11,6 @@ public class CameraController : MonoBehaviour
 
     Camera cam;
     float camScale;
-
     float camLerpSpeed;
 
     void Awake()

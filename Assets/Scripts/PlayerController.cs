@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerControl : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     Rigidbody2D rb2d;
     Animator animator;
@@ -11,19 +11,20 @@ public class PlayerControl : MonoBehaviour
         Idle,
         Walk,
         Attack,
+        Hit,
         Dead
     }
 
-    // the position of first spawn
-    Vector3 firstPosition;
-    float playerLateralSpeed; // speed for lateral mouvement
-    float playerSpeed; // speed for normal mouvement
-    bool isFacingRight;
-    bool isAttacking;  // bool to stop the mouvement in the attacking animation
+    Vector3 firstPosition;       // the position of first spawn
+    float playerLateralSpeed;   // speed for lateral mouvement
+    float playerSpeed;          // speed for normal mouvement
+    bool isFacingRight;         // bool to know which direction the player is facing
+    bool isAttacking;           // bool to stop the mouvement in the attacking animation
 
     // animator's triggers and bools names
     string attackingAnimationTrigger = "attacking";
-    string dyingAnimationTrigger = "dying";
+    //string dyingAnimationTrigger = "dying"; //not used yet
+    //string hitAnimationTrigger = "hit"; //not used yet
     string walkingAnimationBool = "walking";
 
     void Start()
@@ -114,6 +115,10 @@ public class PlayerControl : MonoBehaviour
             return animationState.Walk;
         }
         if (animator.GetCurrentAnimatorStateInfo(0).IsName("Dead"))
+        {
+            return animationState.Dead;
+        }
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
         {
             return animationState.Dead;
         }
