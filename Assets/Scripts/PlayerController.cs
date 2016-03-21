@@ -1,75 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : GenericCharacterController
 {
-    Rigidbody2D rb2d;
-    Animator animator;
-
-    enum animationState
+    protected override void AssignToSpawnPosition()
     {
-        Idle,
-        Walk,
-        Attack,
-        Hit,
-        Dead
+        gameObject.transform.position = spawnPosition.position;
     }
 
-    Vector3 firstPosition;       // the position of first spawn
-    float playerLateralSpeed;   // speed for lateral mouvement
-    float playerSpeed;          // speed for normal mouvement
-    bool isFacingRight;         // bool to know which direction the player is facing
-    bool isAttacking;           // bool to stop the mouvement in the attacking animation
-
-    // animator's triggers and bools names
-    string attackingAnimationTrigger = "attacking";
-    //string dyingAnimationTrigger = "dying"; //not used yet
-    //string hitAnimationTrigger = "hit"; //not used yet
-    string walkingAnimationBool = "walking";
-
-    void Start()
+    protected override void AttackFunc()
     {
-        firstPosition = GameObject.FindGameObjectWithTag("FirstPosition").GetComponent<Transform>().position;
-        rb2d = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
-
-        transform.position = firstPosition;
-        playerSpeed = 1.5f;
-        // this is used to insure having the same speed in all the directions
-        playerLateralSpeed = playerSpeed / Mathf.Sqrt(2);
-        isFacingRight = true;
-        isAttacking = false;
-    }
-
-    void Update()
-    {
-        // stops mouvement if the attack animation is on
-        if (GetAnimationState() == animationState.Attack)
-        {
-            isAttacking = false;
-        }
-        else
-        {
-            isAttacking = true;
-        }
-
-        Vector2 mouvementVector = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-
-        if (isAttacking && Vector2.zero != mouvementVector)
-        {
-            playerLateralSpeed = playerSpeed / Mathf.Sqrt(2);
-            if ((mouvementVector.x > 0 && !isFacingRight) || (mouvementVector.x < 0 && isFacingRight))
-            {
-                Flip();
-            }
-            animator.SetBool(walkingAnimationBool, true);
-            Move(mouvementVector);
-        }
-        else
-        {
-            animator.SetBool(walkingAnimationBool, false);
-        }
-
         //either with one press or continuous press trigger the attack
         if (Input.GetButton("Attack"))
         {
@@ -82,51 +23,29 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // uses the same animations, just flip the sprite
-    void Flip()
+    protected override void GotHit()
     {
-        isFacingRight = !isFacingRight;
-        Vector3 theScale = transform.localScale;
-        theScale.x *= -1;
-        transform.localScale = theScale;
-    }
-
-    //to adjust the speed to the type of mouvement (lateral or horizontal/vertical)
-    void Move(Vector2 mouvement_vector)
-    {
-        if (mouvement_vector.x * mouvement_vector.y == 0)
+        if (Input.GetButton("Fire2"))
         {
-            rb2d.MovePosition(rb2d.position + mouvement_vector * Time.deltaTime * playerSpeed);
+            animator.SetTrigger(hitAnimationTrigger);
         }
-        else
+        if (Input.GetButtonUp("Fire2"))
         {
-            rb2d.MovePosition(rb2d.position + mouvement_vector * Time.deltaTime * playerLateralSpeed);
-        }
-    }
-
-    animationState GetAnimationState()
-    {
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
-        {
-            return animationState.Attack;
-        }
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Walk"))
-        {
-            return animationState.Walk;
-        }
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Dead"))
-        {
-            return animationState.Dead;
-        }
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
-        {
-            return animationState.Dead;
-        }
-        else
-        {
-            return animationState.Idle;
+            animator.ResetTrigger(hitAnimationTrigger);
         }
 
     }
 
+    protected override void GotKilled()
+    {
+        if (Input.GetButtonDown("Fire3"))
+        {
+            animator.SetTrigger(dyingAnimationTrigger);
+        }
+    }
+
+    protected override void UpdateMouvementVector()
+    {
+        mouvementVector = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+    }
 }

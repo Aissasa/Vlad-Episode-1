@@ -3,10 +3,8 @@ using System.Collections;
 
 public class CameraController : MonoBehaviour
 {
-
-
     Transform player;
-    Vector3 firstPlayerPosition;
+    Vector3 playerFirstPosition;
     Vector3 cameraSpacer; // to insure z is not 0
 
     Camera cam;
@@ -16,17 +14,16 @@ public class CameraController : MonoBehaviour
     void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
-        firstPlayerPosition = GameObject.FindGameObjectWithTag("FirstPosition").GetComponent<Transform>().position;
-
+        playerFirstPosition = GameObject.FindGameObjectWithTag("PlayerFirstPosition").GetComponent<Transform>().position;
         cam = GetComponent<Camera>();
         cameraSpacer = new Vector3(0, 0, -10);
 
-        transform.position = firstPlayerPosition + cameraSpacer;
+        transform.position = playerFirstPosition + cameraSpacer;
         camScale = 3f;
         camLerpSpeed = 0.1f;
     }
 
-    void Update()
+    void LateUpdate()
     {
         //adjust the camera to the resolution of the screen
         cam.orthographicSize = (Screen.height / 100f) / camScale;
