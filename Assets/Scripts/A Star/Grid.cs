@@ -4,12 +4,15 @@ using System.Collections.Generic;
 
 public class Grid : MonoBehaviour
 {
-    //test
+    //note test
     //public Transform playerPosition;
     public LayerMask unwalkableMask;
     public Vector2 gridWorldSize;
     public float nodeRadius;
     Node[,] grid;
+
+    //note : test
+    public List<Node> path { get; set; }
 
     Vector2 worldBottomLeft;
     float nodeDiameter;
@@ -81,11 +84,6 @@ public class Grid : MonoBehaviour
         return grid[x, y];
     }
 
-    //note : test
-    public List<Node> path;
-    public List<Node> openSet;
-    public HashSet<Node> closedSet;
-
     void OnDrawGizmos()
     {
         Gizmos.DrawWireCube(transform.position, new Vector3(gridWorldSize.x, gridWorldSize.y, 0));
@@ -97,20 +95,6 @@ public class Grid : MonoBehaviour
                 Gizmos.color = node.walkable ? Color.white : Color.blue;
                 //Gizmos.color = node == playerNode ? Color.cyan : Gizmos.color;
                 // note : test
-                if (openSet != null)
-                {
-                    if (openSet.Contains(node))
-                    {
-                        Gizmos.color = Color.green;
-                    }
-                }
-                if (closedSet != null)
-                {
-                    if (closedSet.Contains(node))
-                    {
-                        Gizmos.color = Color.red;
-                    }
-                }
                 if (path != null)
                 {
                     if (path.Contains(node))

@@ -3,13 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-public class Pathfinding : MonoBehaviour {
+public class Pathfinding : MonoBehaviour
+{
 
     public Transform seeker, target;
 
     Grid grid;
     List<Node> shortestPath;
-    int diagonalCost = 14 , lateralCost = 10;
+    int diagonalCost = 14, lateralCost = 10;
 
     void Awake()
     {
@@ -70,9 +71,6 @@ public class Pathfinding : MonoBehaviour {
                     }
                 }
             }
-            // note: test
-            grid.openSet = openSet;
-            grid.closedSet = closedSet;
         }
     }
 
