@@ -8,7 +8,6 @@ public class LinearMouvement : IMouvement
 
     private LinearMouvement()
     {
-
     }
 
     public static LinearMouvement Instance()
@@ -32,8 +31,8 @@ public class LinearMouvement : IMouvement
         else
         {
             //this is used to insure having the same speed in all the directions
-            float lateralSpeed = speed / Mathf.Sqrt(2);
-            rb2d.MovePosition(rb2d.position + mouvementVector * Time.deltaTime * lateralSpeed);
+            float diagonalSpeed = speed / Mathf.Sqrt(2);
+            rb2d.MovePosition(rb2d.position + mouvementVector * Time.deltaTime * diagonalSpeed);
         }
     }
 }

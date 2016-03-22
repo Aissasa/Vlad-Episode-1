@@ -78,7 +78,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\A Star\TestScript.cs" />
+    <Compile Include="Assets\Scripts\A Star\Grid.cs" />
+    <Compile Include="Assets\Scripts\A Star\Node.cs" />
+    <Compile Include="Assets\Scripts\A Star\Pathfinding.cs" />
     <Compile Include="Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\EnemyController.cs" />
     <Compile Include="Assets\Scripts\GenericCharacterController.cs" />
