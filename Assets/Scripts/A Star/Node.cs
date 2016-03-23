@@ -34,6 +34,6 @@ public class Node : IHeapItem<Node>
             compare = hCost.CompareTo(node.hCost);
         }
 
-        return compare;
+        return -compare;
     }
 }

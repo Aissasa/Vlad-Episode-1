@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class Grid : MonoBehaviour
 {
     //note test
+    public bool displayOnlyPath = false;
     //public Transform playerPosition;
     public LayerMask unwalkableMask;
     public Vector2 gridWorldSize;
@@ -17,6 +18,9 @@ public class Grid : MonoBehaviour
     Vector2 worldBottomLeft;
     float nodeDiameter;
     int gridSizeX, gridSizeY;
+
+    // for the heap size
+    public int MaxSize { get { return gridSizeX * gridSizeY; } }
 
     void Start()
     {
@@ -89,21 +93,37 @@ public class Grid : MonoBehaviour
         Gizmos.DrawWireCube(transform.position, new Vector3(gridWorldSize.x, gridWorldSize.y, 0));
         if (grid != null)
         {
-            //Node playerNode = NodeFromWorldPoint(playerPosition.position);
-            foreach (var node in grid)
+            // note : test 
+            if (displayOnlyPath)
             {
-                Gizmos.color = node.walkable ? Color.white : Color.blue;
-                //Gizmos.color = node == playerNode ? Color.cyan : Gizmos.color;
-                // note : test
-                if (path != null)
+                Gizmos.color = Color.black;
+                foreach (var node in grid)
                 {
                     if (path.Contains(node))
                     {
-                        Gizmos.color = Color.black;
+                        Gizmos.DrawCube(new Vector3(node.worldPosition.x, node.worldPosition.y, 0.5f),
+                    new Vector3(nodeDiameter - nodeRadius / 5, nodeDiameter - nodeRadius / 5, 0.1f));
                     }
                 }
-                Gizmos.DrawCube(new Vector3(node.worldPosition.x, node.worldPosition.y, 0.5f),
-                    new Vector3(nodeDiameter - nodeRadius / 5, nodeDiameter - nodeRadius / 5, 0.1f));
+            }
+            else
+            {
+                //Node playerNode = NodeFromWorldPoint(playerPosition.position);
+                foreach (var node in grid)
+                {
+                    Gizmos.color = node.walkable ? Color.white : Color.blue;
+                    //Gizmos.color = node == playerNode ? Color.cyan : Gizmos.color;
+                    // note : test
+                    if (path != null)
+                    {
+                        if (path.Contains(node))
+                        {
+                            Gizmos.color = Color.black;
+                        }
+                    }
+                    Gizmos.DrawCube(new Vector3(node.worldPosition.x, node.worldPosition.y, 0.5f),
+                        new Vector3(nodeDiameter - nodeRadius / 5, nodeDiameter - nodeRadius / 5, 0.1f));
+                }
             }
         }
     }
