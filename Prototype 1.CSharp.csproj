@@ -82,6 +82,7 @@
     <Compile Include="Assets\Scripts\A Star\Heap\Heap.cs" />
     <Compile Include="Assets\Scripts\A Star\Heap\IHeapItem.cs" />
     <Compile Include="Assets\Scripts\A Star\Node.cs" />
+    <Compile Include="Assets\Scripts\A Star\PathRequestManager.cs" />
     <Compile Include="Assets\Scripts\A Star\Pathfinding.cs" />
     <Compile Include="Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\EnemyController.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\RenderingManager.cs" />
     <Compile Include="Assets\Scripts\ScreenFader.cs" />
+    <Compile Include="Assets\Scripts\Unit.cs" />
     <Compile Include="Assets\Scripts\Util\PositionComparer.cs" />
     <Compile Include="Assets\Scripts\Util\Singleton.cs" />
     <Compile Include="Assets\Scripts\Warper.cs" />

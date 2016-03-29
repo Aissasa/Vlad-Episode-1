@@ -6,7 +6,7 @@ public class RenderingManager : Singleton<MonoBehaviour> {
 
     List<GameObject> characters = new List<GameObject>();
 
-    void Awake () {
+    void Start () {
 
         RetrieveCharacters();
         ArrangeCharactersRenderingOrder();        

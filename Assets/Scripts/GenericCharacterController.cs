@@ -3,11 +3,11 @@ using System.Collections;
 
 public abstract class GenericCharacterController : MonoBehaviour {
 
-    protected Animator animator;
     public Transform spawnPosition;       // the position of first spawn
-    protected Vector2 mouvementVector;     
+    protected Animator animator;
+    protected Vector2 movementVector;     
     protected float characterSpeed;       // speed for normal mouvement
-    protected bool isFacingRight;         // bool to know which direction the player is facing
+    protected bool isFacingRight;         // bool to know which direction the character is facing
     private bool isInBlockingAnimation;   // bool to stop the mouvement in blocking animations
 
     // animator's triggers and bools names
@@ -26,33 +26,24 @@ public abstract class GenericCharacterController : MonoBehaviour {
     }
 
     // abstract methods
-    protected abstract void AssignToSpawnPosition();
     protected abstract void AttackFunc();
     protected abstract void GotHit();
     protected abstract void GotKilled();
-    protected abstract void UpdateMouvementVector();
+    protected abstract void Move();
 
     protected virtual void Start()
     {
-        AssignToSpawnPosition(); // todo find a solution for spawn position
-
+        Spawn();
         animator = GetComponent<Animator>();
-        characterSpeed = 1.5f;
-        isFacingRight = true;
         isInBlockingAnimation = false;
     }
 
     protected virtual void Update()
-    {
-        CanItMove();
-        UpdateMouvementVector();
-        MoveCharacter();
-        AttackFunc();
-        GotHit(); // urgent : need to implement gothit and gotkilled ASAP
-        GotKilled();
+    { 
+        CheckCanItMove();
     }
 
-    protected void CanItMove()
+    protected void CheckCanItMove()
     {
         MyAnimationState animState = GetAnimationState();
 
@@ -108,18 +99,26 @@ public abstract class GenericCharacterController : MonoBehaviour {
 
     protected virtual void MoveCharacter()
     {
-        if (!isInBlockingAnimation && Vector2.zero != mouvementVector)
+        if (!isInBlockingAnimation && Vector2.zero != movementVector)
         {
-            if ((mouvementVector.x > 0 && !isFacingRight) || (mouvementVector.x < 0 && isFacingRight))
+            if ((movementVector.x > 0 && !isFacingRight) || (movementVector.x < 0 && isFacingRight))
             {
                 Flip();
             }
             animator.SetBool(walkingAnimationBool, true);
-            LinearMouvement.Instance().Move(gameObject, mouvementVector, characterSpeed);
+            Move();
         }
         else
         {
             animator.SetBool(walkingAnimationBool, false);
+        }
+    }
+
+    protected virtual void Spawn()
+    {
+        if (spawnPosition != null)
+        {
+            transform.position = spawnPosition.position;
         }
     }
 }
