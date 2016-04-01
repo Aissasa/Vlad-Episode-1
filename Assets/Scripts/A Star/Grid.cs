@@ -6,7 +6,7 @@ public class Grid : MonoBehaviour
 {
     //note : test
     public bool displayGridGizmos = false;
-    //public Transform playerPosition;
+    public bool showAll = false;
     public LayerMask unwalkableMask;
     public Vector2 gridWorldSize;
     public float nodeRadius;
@@ -26,6 +26,7 @@ public class Grid : MonoBehaviour
         gridSizeY = Mathf.RoundToInt(gridWorldSize.y / nodeDiameter);
         worldBottomLeft = new Vector2() + Vector2.left * gridWorldSize.x / 2 + Vector2.down * gridWorldSize.y / 2;
         CreateGrid();
+        illegalizeNodes();
     }
 
     void CreateGrid()
@@ -38,8 +39,9 @@ public class Grid : MonoBehaviour
             {
                 Vector2 worldPoint = worldBottomLeft + Vector2.right * (x * nodeDiameter + nodeRadius)
                     + Vector2.up * (y * nodeDiameter + nodeRadius);
-                bool walkable = !Physics2D.CircleCast(worldPoint, nodeRadius, Vector2.zero, Mathf.Infinity, unwalkableMask);
-                grid[x, y] = new Node(worldPoint, walkable, x, y);
+                //bool walkable = !Physics2D.CircleCast(worldPoint, nodeRadius + nodeRadius / 10, Vector2.zero, Mathf.Infinity, unwalkableMask);
+                bool walkable = !Physics2D.BoxCast(worldPoint, new Vector2(nodeRadius + nodeRadius/10 , nodeRadius + nodeRadius / 10), 0f, Vector2.zero, Mathf.Infinity, unwalkableMask);
+                grid[x, y] = new Node(worldPoint, walkable, x, y, new List<Node>());
             }
         }
     }
@@ -55,16 +57,59 @@ public class Grid : MonoBehaviour
                 {
                     continue;
                 }
+
                 int checkX = node.gridX + x;
                 int checkY = node.gridY + y;
+                
                 if (checkX >= 0 && checkX < gridSizeX && checkY >= 0 && checkY < gridSizeY) // in bounds
                 {
+                    if (node.illegalNodes.Contains(grid[checkX, checkY]) && checkX>0 && checkY>0)
+                    {
+                        continue;
+                    }
                     neighbors.Add(grid[checkX, checkY]);
                 }
             }
         }
 
         return neighbors;
+    }
+
+    void illegalizeNodes()
+    {
+        foreach (var node in grid)
+        {
+            if (node.gridX <= 0 || node.gridY <= 0 || node.gridX >= gridSizeX -1 || node.gridY >= gridSizeY -1)
+            {
+                continue;
+            }
+            if (node.walkable)
+            {
+                if (!grid[node.gridX, node.gridY+1].walkable)
+                {
+                    if (!grid[node.gridX +1, node.gridY].walkable)
+                    {
+                        node.illegalNodes.Add(grid[node.gridX + 1, node.gridY + 1]);
+                    }
+                    if (!grid[node.gridX - 1, node.gridY].walkable)
+                    {
+                        node.illegalNodes.Add(grid[node.gridX - 1, node.gridY + 1]);
+                    }
+                }
+
+                if (!grid[node.gridX, node.gridY - 1].walkable)
+                {
+                    if (!grid[node.gridX + 1, node.gridY].walkable)
+                    {
+                        node.illegalNodes.Add(grid[node.gridX + 1, node.gridY - 1]);
+                    }
+                    if (!grid[node.gridX - 1, node.gridY].walkable)
+                    {
+                        node.illegalNodes.Add(grid[node.gridX - 1, node.gridY - 1]);
+                    }
+                }
+            }
+        }
     }
 
     public Node NodeFromWorldPoint(Vector2 worldPoint)
@@ -85,13 +130,23 @@ public class Grid : MonoBehaviour
         Gizmos.DrawWireCube(transform.position, new Vector3(gridWorldSize.x, gridWorldSize.y, 0));
         if (grid != null && displayGridGizmos)
         {
-            //Node playerNode = NodeFromWorldPoint(playerPosition.position);
             foreach (var node in grid)
             {
-                Gizmos.color = node.walkable ? Color.white : Color.blue;
-                //Gizmos.color = node == playerNode ? Color.cyan : Gizmos.color;
-                Gizmos.DrawCube(new Vector3(node.worldPosition.x, node.worldPosition.y, 0.5f),
-                    new Vector3(nodeDiameter - nodeRadius / 5, nodeDiameter - nodeRadius / 5, 0.1f));
+                if (showAll)
+                {
+                    Gizmos.color = node.walkable ? Color.white : Color.blue;
+                    Gizmos.DrawCube(new Vector3(node.worldPosition.x, node.worldPosition.y, 0.5f),
+                        new Vector3(nodeDiameter - nodeRadius / 5, nodeDiameter - nodeRadius / 5, 0.1f));
+                }
+                else
+                {
+                    if (!node.walkable)
+                    {
+                        Gizmos.color = Color.blue;
+                        Gizmos.DrawCube(new Vector3(node.worldPosition.x, node.worldPosition.y, 0.5f),
+                        new Vector3(nodeDiameter - nodeRadius / 5, nodeDiameter - nodeRadius / 5, 0.1f));
+                    }
+                }
             }
         }
     }

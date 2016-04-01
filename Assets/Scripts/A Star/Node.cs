@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 public class Node : IHeapItem<Node>
 {
@@ -15,13 +16,15 @@ public class Node : IHeapItem<Node>
     public int fCost { get { return gCost + hCost; } }
 
     public Node parent { get; set; }
+    public List<Node> illegalNodes { get; set; } 
 
-    public Node(Vector2 _worldPosition, bool _walkable = false, int _gridX = 0, int _gridY = 0)
+    public Node(Vector2 _worldPosition, bool _walkable = false, int _gridX = 0, int _gridY = 0, List<Node> _illegalNodes = null)
     {
         worldPosition = _worldPosition;
         walkable = _walkable;
         gridX = _gridX;
         gridY = _gridY;
+        illegalNodes = _illegalNodes;
     }
 
     public int heapIndex { get; set; }

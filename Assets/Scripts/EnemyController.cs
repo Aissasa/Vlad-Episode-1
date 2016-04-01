@@ -1,10 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 public class EnemyController : GenericCharacterController
 {
     public bool displayPathGizmos;
+    public bool smoothIt;
+    public bool refineIt;
+    public LayerMask unwalkableLayer;
 
     Transform player;
     Vector2[] path;
@@ -15,20 +19,10 @@ public class EnemyController : GenericCharacterController
     {
         base.Start();
         isFacingRight = false;
-        characterSpeed = 1.5f;
+        characterSpeed = 1f;
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
         PathRequestManager.RequestPath(transform.position, player.position, OnPathFound);
 
-    }
-
-    public void OnPathFound(Vector2[] newPath, bool pathFound)
-    {
-        if (pathFound)
-        {
-            path = newPath;
-            StopCoroutine(Follow());
-            StartCoroutine(Follow());
-        }
     }
 
     protected override void AttackFunc()
@@ -43,66 +37,147 @@ public class EnemyController : GenericCharacterController
     {
     }
 
+    protected override void Move()
+    {
+        //ObstacleFinder.Instance.CheckObstacles(gameObject, transform.position, nextPos, unwalkableLayer);
+        LinearMouvement.Instance().MoveTo(gameObject, nextPos, characterSpeed);
+    }
+
     protected IEnumerator Follow()
     {
         Vector2 currentWayPoint = path[0];
         nextPos = currentWayPoint;
-        movementVector = CalculateDirection(transform.position, path[targetIndex]);
+        movementVector = DirectionAndDistanceCalculator.CalculateSignedDirection(transform.position, path[targetIndex]);
         Vector2 enemyPosition = new Vector2();
         while (true)
         {
             enemyPosition.x = transform.position.x;
             enemyPosition.y = transform.position.y;
-            if (currentWayPoint==enemyPosition)
+            if (currentWayPoint == enemyPosition)
             {
                 targetIndex++;
                 if (targetIndex >= path.Length)
                 {
                     yield break;
                 }
-                movementVector = CalculateDirection(path[targetIndex-1], path[targetIndex]);
+                movementVector = DirectionAndDistanceCalculator.CalculateSignedDirection(path[targetIndex - 1], path[targetIndex]);
                 currentWayPoint = path[targetIndex];
                 nextPos = currentWayPoint;
             }
             MoveCharacter();
+            if (transform.Get2DPosition().Equals(path[path.Length - 1]))
+            {
+                movementVector = Vector2.zero;
+            }
             yield return null;
         }
-
     }
 
-    protected Vector2 CalculateDirection(Vector2 startPos, Vector2 targetPos)
+    public void OnPathFound(Vector2[] newPath, bool pathFound)
     {
-        return new Vector2(targetPos.x - startPos.x, targetPos.y - startPos.y);
+        if (pathFound)
+        {
+            path = newPath;
+            if (refineIt)
+            {
+                RefinePath();
+            }
+            if (smoothIt)
+            {
+                SmoothPath();
+            }
+            StopCoroutine(Follow());
+            StartCoroutine(Follow());
+        }
     }
 
-    protected override void Move()
+    protected void SmoothPath()
     {
-        LinearMouvement.Instance().MoveTo(gameObject ,nextPos, characterSpeed);
-        //Debug.Log("MovementVect"+ movementVector);
-        //LinearMouvement.Instance().Move(gameObject, movementVector, characterSpeed);
+        Vector2 checkPoint = path[0];
+        Vector2 currentPoint;
+        Vector2 colliderPosition;
+        List<Vector2> smootherPath = new List<Vector2>();
+        smootherPath.Add(checkPoint);
+
+        for (int i = 2; i < path.Length; i++)
+        {
+            currentPoint = path[i];
+            if (ObstacleFinder.Instance.CheckObstacles(gameObject, checkPoint, currentPoint, unwalkableLayer, out colliderPosition))
+            {
+                checkPoint = path[i - 1];
+                smootherPath.Add(checkPoint);
+            }
+        }
+
+        smootherPath.Add(path[path.Length - 1]);
+        path = smootherPath.ToArray();
+    }
+
+    protected void RefinePath()
+    {
+        List<Vector2> refinedPath = new List<Vector2>(path);
+        Vector2 colliderPosition;
+
+        int i = 1;
+        while (i < refinedPath.Count)
+        {
+            Vector2 startPos = refinedPath[i - 1];
+            Vector2 endPos = refinedPath[i];
+            Vector2 direction = DirectionAndDistanceCalculator.CalculateSignedDirection(startPos, endPos);
+            if (direction.x != 0 && direction.y !=0)
+            {
+                if (ObstacleFinder.Instance.CheckObstacles(gameObject, startPos, endPos, unwalkableLayer, out colliderPosition))
+                {
+                    Vector2 middle = DirectionAndDistanceCalculator.GetMiddleOfVector(startPos, endPos);
+                    Vector2 newPoint;
+                    if (colliderPosition.IsAbove(middle))
+                    {
+                        if (direction.y>0)
+                        {
+                            newPoint = new Vector2(endPos.x, startPos.y);
+                        }
+                        else
+                        {
+                            newPoint = new Vector2(startPos.x, endPos.y);
+                        }
+                    }
+                    else
+                    {
+                        if (direction.y>0)
+                        {
+                            newPoint = new Vector2(startPos.x, endPos.y);
+                        }
+                        else
+                        {
+                            newPoint = new Vector2(endPos.x, startPos.y);
+                        }
+                    }
+
+                    refinedPath.Insert(i, newPoint);
+                }
+            }
+
+            i++;
+        }
+
+        path = refinedPath.ToArray();
     }
 
     void OnDrawGizmos()
     {
         if (path != null && displayPathGizmos)
         {
-            //Vector2 init = transform.position;
             for (int i = 1; i < path.Length; i++)
             {
                 Gizmos.color = Color.black;
                 Gizmos.DrawCube(new Vector3(path[i].x, path[i].y, 0.6f), new Vector3(0.1f, 0.1f, 0.1f));
-                //if (i==1)
-                //{
-                //    Gizmos.DrawCube(new Vector3(init.x, init.y, 0.6f), new Vector3(0.1f, 0.1f, 0.1f));
-                //    Gizmos.DrawLine(init, path[i]);
-                //}
                 if (i == targetIndex)
                 {
                     Gizmos.DrawLine(transform.position, path[i]);
                 }
                 else
                 {
-                    Gizmos.DrawLine(path[i-1], path[i]);
+                    Gizmos.DrawLine(path[i - 1], path[i]);
                 }
             }
         }

@@ -22,12 +22,6 @@ public class PathRequestManager : MonoBehaviour {
     public static void RequestPath (Vector2 pathStart, Vector2 pathEnd, Action<Vector2[], bool> callback)
     {
         PathRequest newRequest = new PathRequest(pathStart, pathEnd, callback);
-        // note : test
-        if (instance == null)
-        {
-            Debug.Log("Does not Exist");
-        }
-  
         instance.pathRequestQueue.Enqueue(newRequest);
         instance.TryProcessNext();
 

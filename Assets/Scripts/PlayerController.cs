@@ -58,7 +58,7 @@ public class PlayerController : GenericCharacterController
 
     protected override void Move()
     {
-        LinearMouvement.Instance().Move(gameObject, movementVector, characterSpeed);
+        LinearMouvement.Instance().MoveTowards(gameObject, movementVector, characterSpeed);
     }
 
     void UpdateMovementVector()
