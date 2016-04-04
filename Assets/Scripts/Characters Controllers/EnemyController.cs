@@ -6,20 +6,28 @@ using System.Collections.Generic;
 public class EnemyController : GenericCharacterController
 {
     public bool displayPathGizmos;
-    public bool smoothIt;
     public bool refineIt;
+    public bool smoothIt;
+    public bool smoothItFurther;
+
+    [Range(0, 1)]
+    public float bezierInterpolationRange;
     public LayerMask unwalkableLayer;
 
     Transform player;
     Vector2[] path;
+    BezierPath bezierPath;
     int targetIndex;
     Vector2 nextPos;
+    //bool isChasing;
 
     protected override void Start()
     {
         base.Start();
-        isFacingRight = false;
+        if (GetComponent<SpriteRenderer>().flipX)
+            isFacingRight = false;
         characterSpeed = 1f;
+        //isChasing = false;
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
         PathRequestManager.RequestPath(transform.position, player.position, OnPathFound);
 
@@ -39,8 +47,11 @@ public class EnemyController : GenericCharacterController
 
     protected override void Move()
     {
-        //ObstacleFinder.Instance.CheckObstacles(gameObject, transform.position, nextPos, unwalkableLayer);
+        //ps : test
+        //Vector2 test;
+        //ObstacleFinder.Instance.CheckObstacles(gameObject, transform.position, nextPos, unwalkableLayer, out test);
         LinearMouvement.Instance().MoveTo(gameObject, nextPos, characterSpeed);
+        //LinearMouvement.Instance().MoveTowards(gameObject, nextPos - transform.Get2DPosition());
     }
 
     protected IEnumerator Follow()
@@ -86,10 +97,27 @@ public class EnemyController : GenericCharacterController
             {
                 SmoothPath();
             }
+            if (smoothItFurther)
+            {
+                BezierInterpolate();
+                Debug.Log(path.Length);
+            }
+
             StopCoroutine(Follow());
             StartCoroutine(Follow());
         }
     }
+
+    protected void BezierInterpolate()
+    {
+        bezierPath = new BezierPath();
+        List<Vector2> thePath = new List<Vector2>(path);
+        bezierPath.Interpolate(thePath, bezierInterpolationRange);
+
+        path = bezierPath.GetPathPoints().ToArray();
+
+    }
+
 
     protected void SmoothPath()
     {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class Grid : MonoBehaviour
 {
-    //note : test
+    //ps : test
     public bool displayGridGizmos = false;
     public bool showAll = false;
     public LayerMask unwalkableMask;

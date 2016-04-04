@@ -112,6 +112,7 @@ public class Pathfinding : MonoBehaviour
             currentNode = currentNode.parent;
         }
         return ReverseAndConvert(shortestPath);
+        //return SimplifyAndReversePath(shortestPath);
     }
 
     private Vector2[] ReverseAndConvert(List<Node> path)
@@ -127,24 +128,24 @@ public class Pathfinding : MonoBehaviour
         return wayPoints.ToArray();
     }
 
-    //Vector2[] SimplifyPath(List<Node> path)
-    //{
-    //    List<Vector2> wayPoints = new List<Vector2>();
-    //    // note :test
-    //    //wayPoints.Add(path[0].worldPosition);
-    //    Vector2 directionOld = Vector2.zero;
+    Vector2[] SimplifyAndReversePath(List<Node> path)
+    {
+        List<Vector2> wayPoints = new List<Vector2>();
+        // note :test
+        //wayPoints.Add(path[0].worldPosition);
+        Vector2 directionOld = Vector2.zero;
 
-    //    for (int i = 1; i < path.Count; i++)
-    //    {
-    //        Vector2 directionNew = CalculateDirection(path[i - 1], path[i]);
-    //        if (directionNew != directionOld)
-    //        {
-    //            wayPoints.Add(path[i].worldPosition);
-    //        }
-    //        directionOld = directionNew;
-    //    }
-    //    // todo : vid 16:06
-    //    wayPoints.Reverse();
-    //    return wayPoints.ToArray();
-    //}
+        for (int i = 1; i < path.Count; i++)
+        {
+            Vector2 directionNew = CalculateDirection(path[i - 1], path[i]);
+            if (directionNew != directionOld)
+            {
+                wayPoints.Add(path[i].worldPosition);
+            }
+            directionOld = directionNew;
+        }
+        // todo : vid 16:06
+        wayPoints.Reverse();
+        return wayPoints.ToArray();
+    }
 }

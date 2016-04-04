@@ -36,6 +36,7 @@ public abstract class GenericCharacterController : MonoBehaviour {
         Spawn();
         animator = GetComponent<Animator>();
         isInBlockingAnimation = false;
+        isFacingRight = true;
     }
 
     protected virtual void Update()

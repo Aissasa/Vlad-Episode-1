@@ -7,7 +7,6 @@ public class PlayerController : GenericCharacterController
     protected override void Start()
     {
         base.Start();
-        isFacingRight = true;
         characterSpeed = 1.5f;
     }
 

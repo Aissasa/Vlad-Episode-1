@@ -78,27 +78,27 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\A Star\Grid.cs" />
-    <Compile Include="Assets\Scripts\A Star\Heap\Heap.cs" />
-    <Compile Include="Assets\Scripts\A Star\Heap\IHeapItem.cs" />
-    <Compile Include="Assets\Scripts\A Star\Node.cs" />
-    <Compile Include="Assets\Scripts\A Star\ObstacleFinder.cs" />
-    <Compile Include="Assets\Scripts\A Star\PathRequestManager.cs" />
-    <Compile Include="Assets\Scripts\A Star\Pathfinding.cs" />
     <Compile Include="Assets\Scripts\CameraController.cs" />
-    <Compile Include="Assets\Scripts\EnemyController.cs" />
-    <Compile Include="Assets\Scripts\GenericCharacterController.cs" />
+    <Compile Include="Assets\Scripts\Characters Controllers\EnemyController.cs" />
+    <Compile Include="Assets\Scripts\Characters Controllers\GenericCharacterController.cs" />
+    <Compile Include="Assets\Scripts\Characters Controllers\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\Maps Contollers\ScreenFader.cs" />
+    <Compile Include="Assets\Scripts\Maps Contollers\Warper.cs" />
+    <Compile Include="Assets\Scripts\Mouvement\BezierPath.cs" />
     <Compile Include="Assets\Scripts\Mouvement\IMouvement.cs" />
     <Compile Include="Assets\Scripts\Mouvement\LinearMouvement.cs" />
-    <Compile Include="Assets\Scripts\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\Pathfinding\Grid.cs" />
+    <Compile Include="Assets\Scripts\Pathfinding\Heap\Heap.cs" />
+    <Compile Include="Assets\Scripts\Pathfinding\Heap\IHeapItem.cs" />
+    <Compile Include="Assets\Scripts\Pathfinding\Node.cs" />
+    <Compile Include="Assets\Scripts\Pathfinding\ObstacleFinder.cs" />
+    <Compile Include="Assets\Scripts\Pathfinding\PathRequestManager.cs" />
+    <Compile Include="Assets\Scripts\Pathfinding\Pathfinding.cs" />
     <Compile Include="Assets\Scripts\RenderingManager.cs" />
-    <Compile Include="Assets\Scripts\ScreenFader.cs" />
-    <Compile Include="Assets\Scripts\Unit.cs" />
     <Compile Include="Assets\Scripts\Util\DirectionAndDistanceCalculator.cs" />
     <Compile Include="Assets\Scripts\Util\ExtentionMethods.cs" />
     <Compile Include="Assets\Scripts\Util\PositionComparer.cs" />
     <Compile Include="Assets\Scripts\Util\Singleton.cs" />
-    <Compile Include="Assets\Scripts\Warper.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\ImportBehaviour.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\SortingLayerExposed.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\TileAnimator.cs" />
