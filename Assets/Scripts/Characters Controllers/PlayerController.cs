@@ -4,16 +4,27 @@ using System;
 
 public class PlayerController : GenericCharacterController
 {
+    public delegate void MovementAction();
+    public static event MovementAction Moved;
+
+    Vector2 positionOfTheLastMovedTrigger;
+    bool hasMoved;
+    float movedTriggerCounter;
+    [Range(0.01f, 2)]
+    public float chasingDelay;
+    
     protected override void Start()
     {
         base.Start();
-        characterSpeed = 1.5f;
+        //characterSpeed = 1.5f;
+        positionOfTheLastMovedTrigger = transform.Get2DPosition();
+        hasMoved = false;
+        movedTriggerCounter = chasingDelay;
     }
 
     protected override void Update()
     {
         base.Update();
-        UpdateMovementVector();
         MoveCharacter();
         AttackFunc();
         GotHit(); // todo : need to implement gothit and gotkilled ASAP
@@ -21,6 +32,10 @@ public class PlayerController : GenericCharacterController
 
     }
 
+    protected void LateUpdate()
+    {
+        TriggerChasingEvent();
+    }
     protected override void AttackFunc()
     {
         if (Input.GetButton("Attack"))
@@ -57,10 +72,38 @@ public class PlayerController : GenericCharacterController
 
     protected override void Move()
     {
-        LinearMouvement.Instance().MoveTowards(gameObject, movementVector, characterSpeed);
+        LinearMouvement.Instance().MoveTowardsDirection(gameObject, movementVector, characterSpeed);
     }
 
-    void UpdateMovementVector()
+    protected void CheckIfHasMoved()
+    {
+        if (!hasMoved && transform.Get2DPosition() != positionOfTheLastMovedTrigger) 
+        {
+            hasMoved = true;
+        }
+    }
+
+    protected void TriggerChasingEvent()
+    {
+        if (Moved == null)
+        {
+            return;
+        }
+        CheckIfHasMoved();
+        if (hasMoved && movedTriggerCounter <= 0)
+        {
+            positionOfTheLastMovedTrigger = transform.Get2DPosition();
+            hasMoved = false;
+            movedTriggerCounter = chasingDelay;
+            Moved();
+        }
+        else
+        {
+            movedTriggerCounter -= Time.deltaTime;
+        }
+    }
+
+    protected override void UpdateMovementVector()
     {
         movementVector = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
     }

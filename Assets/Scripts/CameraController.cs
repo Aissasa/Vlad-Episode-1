@@ -3,13 +3,16 @@ using System.Collections;
 
 public class CameraController : MonoBehaviour
 {
+    [Range(1, 10)]
+    public float camScale;
+    [Range(0.05f, 1)]
+    public float camLerpSpeed;
+
     Transform player;
     Vector3 playerFirstPosition;
     Vector3 cameraSpacer; // to insure z is not 0
 
     Camera cam;
-    float camScale;
-    float camLerpSpeed;
 
     void Awake()
     {
@@ -19,8 +22,8 @@ public class CameraController : MonoBehaviour
         cameraSpacer = new Vector3(0, 0, -10);
 
         transform.position = playerFirstPosition + cameraSpacer;
-        camScale = 3f;
-        camLerpSpeed = 0.1f;
+        //camScale = 3f;
+        //camLerpSpeed = 0.1f;
     }
 
     void LateUpdate()

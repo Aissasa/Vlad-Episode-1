@@ -2,7 +2,7 @@
 
 public interface IMouvement
 {
-    void MoveTowards(GameObject go, Vector2 mouvementVector, float speed);
-    void MoveTo(GameObject go, Vector2 targetPos, float speed);
+    void MoveTowardsDirection(GameObject go, Vector2 mouvementVector, float speed);
+    void MoveToPosition(GameObject go, Vector2 targetPos, float speed);
 }
 

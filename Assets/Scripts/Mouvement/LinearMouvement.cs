@@ -20,7 +20,7 @@ public class LinearMouvement : IMouvement
         return instance;
     }
 
-    public void MoveTowards(GameObject go, Vector2 movementVector, float speed = 1.5f)
+    public void MoveTowardsDirection(GameObject go, Vector2 movementVector, float speed = 1.5f)
     {
         Rigidbody2D rb2d = go.GetComponent<Rigidbody2D>();
 
@@ -36,11 +36,10 @@ public class LinearMouvement : IMouvement
         }
     }
 
-    public void MoveTo(GameObject go, Vector2 targetPos, float speed = 1.5f)
+    public void MoveToPosition(GameObject go, Vector2 targetPos, float speed = 1.5f)
     {
         Transform trans = go.GetComponent<Transform>();
-
-        trans.position = Vector2.MoveTowards(trans.position, targetPos, speed * Time.deltaTime);
+        trans.position = Vector2.MoveTowards(trans.Get2DPosition(), targetPos, speed * Time.deltaTime);
     }
 
 }

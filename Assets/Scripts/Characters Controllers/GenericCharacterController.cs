@@ -3,12 +3,13 @@ using System.Collections;
 
 public abstract class GenericCharacterController : MonoBehaviour {
 
+    [Range(0.1f, 10f)]
+    public float characterSpeed;       // speed for normal mouvement
     public Transform spawnPosition;       // the position of first spawn
     protected Animator animator;
     protected Vector2 movementVector;     
-    protected float characterSpeed;       // speed for normal mouvement
     protected bool isFacingRight;         // bool to know which direction the character is facing
-    private bool isInBlockingAnimation;   // bool to stop the mouvement in blocking animations
+    protected bool isInBlockingAnimation;   // bool to stop the mouvement in blocking animations
 
     // animator's triggers and bools names
     protected string attackingAnimationTrigger = "attacking";
@@ -30,6 +31,7 @@ public abstract class GenericCharacterController : MonoBehaviour {
     protected abstract void GotHit();
     protected abstract void GotKilled();
     protected abstract void Move();
+    protected abstract void UpdateMovementVector();
 
     protected virtual void Start()
     {
@@ -100,6 +102,8 @@ public abstract class GenericCharacterController : MonoBehaviour {
 
     protected virtual void MoveCharacter()
     {
+        UpdateMovementVector();
+
         if (!isInBlockingAnimation && Vector2.zero != movementVector)
         {
             if ((movementVector.x > 0 && !isFacingRight) || (movementVector.x < 0 && isFacingRight))
