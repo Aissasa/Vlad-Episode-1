@@ -19,9 +19,9 @@ public class PathRequestManager : MonoBehaviour {
         pathfinding = GetComponent<Pathfinding>();
     }
 
-    public static void RequestPath (Vector2 pathStart, Vector2 pathEnd, Action<Vector2[], bool> callback)
+    public static void RequestPath (Vector2 pathStart, Vector2 pathEnd, GameObject go, LayerMask unwalkableLayer, float bezierInterpolationRange, Action<Vector2[], bool> callback)
     {
-        PathRequest newRequest = new PathRequest(pathStart, pathEnd, callback);
+        PathRequest newRequest = new PathRequest(pathStart, pathEnd, go, unwalkableLayer, bezierInterpolationRange, callback);
         instance.pathRequestQueue.Enqueue(newRequest);
         instance.TryProcessNext();
 
@@ -40,7 +40,8 @@ public class PathRequestManager : MonoBehaviour {
         {
             currentPathRequest = pathRequestQueue.Dequeue();
             isProcessingPath = true;
-            pathfinding.StartPathFinding(currentPathRequest.pathStart, currentPathRequest.pathEnd);
+            pathfinding.StartPathFinding(currentPathRequest.pathStart, currentPathRequest.pathEnd, 
+                currentPathRequest.go, currentPathRequest.unwalkableLayer, currentPathRequest.bezierInterpolationRange);
         }
     }
 
@@ -48,12 +49,18 @@ public class PathRequestManager : MonoBehaviour {
     {
         public Vector2 pathStart;
         public Vector2 pathEnd;
+        public GameObject go;
+        public LayerMask unwalkableLayer;
+        public float bezierInterpolationRange;
         public Action<Vector2[], bool> callback;
 
-        public PathRequest(Vector2 _pathStart, Vector2 _pathEnd, Action<Vector2[], bool> _callback)
+        public PathRequest(Vector2 _pathStart, Vector2 _pathEnd, GameObject _go, LayerMask _layerMask, float _bezierInterpolationRange, Action<Vector2[], bool> _callback)
         {
             pathStart = _pathStart;
             pathEnd = _pathEnd;
+            go = _go;
+            unwalkableLayer = _layerMask;
+            bezierInterpolationRange = _bezierInterpolationRange;
             callback = _callback;
         }
     }

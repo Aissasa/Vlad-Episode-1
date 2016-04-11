@@ -8,7 +8,7 @@ using System.Collections.Generic;
 public class BezierPath
 {
     private const int SEGMENTS_PER_CURVE = 10;
-    private const float MINIMUM_SQR_DISTANCE = 0.025f; // between points
+    private const float MINIMUM_SQR_DISTANCE = 0.01f; // between points
 
     // This corresponds to about 172 degrees, 8 degrees from a straight line
     private const float DIVISION_THRESHOLD = -0.99f; 

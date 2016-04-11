@@ -6,20 +6,37 @@ using System;
 
 public class Pathfinding : MonoBehaviour
 {
+    public Transform playerPosition;
+
     PathRequestManager requestManager;
-    Grid grid;
     List<Node> shortestPath;
+    GameObject currentGameObject;
+    LayerMask currentLayerMask;
+    float currentBezierInterpolationRange;
+
+    Grid grid;
     int diagonalCost = 14, lateralCost = 10;
 
     void Awake()
     {
         grid = GetComponent<Grid>();
+        if (playerPosition == null)
+        {
+            playerPosition = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+        }
         requestManager = GetComponent<PathRequestManager>();
     }
 
-    public void StartPathFinding(Vector2 startPos, Vector2 targetPos)
+    public void StartPathFinding(Vector2 startPos, Vector2 targetPos, GameObject go, LayerMask layerMask, float bezierInterpolationRange)
     {
-        StartCoroutine(FindPath(startPos, targetPos));
+        currentGameObject = go;
+        currentLayerMask = layerMask;
+        currentBezierInterpolationRange = bezierInterpolationRange;
+        Vector2 collider;
+        if (!ObstacleFinder.Instance.CheckObstacles(currentGameObject, currentGameObject.transform.Get2DPosition(), playerPosition.Get2DPosition(), currentLayerMask, out collider))
+            requestManager.FinishedProcessingPath(new Vector2[] { playerPosition.Get2DPosition() }, true);
+        else
+            StartCoroutine(FindPath(startPos, targetPos));
     }
 
     Vector2 CalculateDirection(Node startNode, Node targetNode)
@@ -83,8 +100,8 @@ public class Pathfinding : MonoBehaviour
         if (pathFindingSuccess)
         {
             wayPoints = RetracePath(startNode, targetNode);
+            wayPoints = PathRefiner.Instance.RefineAndSmoothPath(currentGameObject, wayPoints, currentLayerMask, currentBezierInterpolationRange);
         }
-
         requestManager.FinishedProcessingPath(wayPoints, pathFindingSuccess);
     }
 
@@ -128,6 +145,7 @@ public class Pathfinding : MonoBehaviour
         return wayPoints.ToArray();
     }
 
+    // todo : delete this
     Vector2[] SimplifyAndReversePath(List<Node> path)
     {
         List<Vector2> wayPoints = new List<Vector2>();
@@ -144,7 +162,6 @@ public class Pathfinding : MonoBehaviour
             }
             directionOld = directionNew;
         }
-        // todo : vid 16:06
         wayPoints.Reverse();
         return wayPoints.ToArray();
     }
