@@ -13,9 +13,19 @@ public class LookOutState : IEnemyState
         ResetVariables();
     }
 
+    public void DrawGizmos()
+    {
+        Debug.Log("Nothing to draw in lookout");
+    }
+
     public void ResetVariables()
     {
         lookOutTimer = enemy.lookOutDelay;
+    }
+
+    public void ToAttackState()
+    {
+        Debug.Log("Cant go to from lookout to attack directly");
     }
 
     public void ToChaseState()

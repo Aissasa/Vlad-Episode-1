@@ -16,10 +16,21 @@ public class ChaseState : IEnemyState
         pathRefreshTimer = enemy.pathRefreshDelay; // urgent : externalize game wide variables to a game manager which will be a singleton
     }
 
+    public void DrawGizmos()
+    {
+        movementHandler.DrawPath();
+    }
+
     public void ResetVariables()
     {
+        movementHandler.ResetToZero();
         pathRefreshTimer = enemy.pathRefreshDelay;
+    }
 
+    public void ToAttackState()
+    {
+        ResetVariables();
+        enemy.currentEnemyState = enemy.attackState;
     }
 
     public void ToChaseState()
@@ -41,6 +52,11 @@ public class ChaseState : IEnemyState
     public void UpdateState()
     {
         Chase();
+        if (PlayerInAttackRange())
+        {
+            enemy.animator.SetBool(enemy.walkingAnimationBool, false);
+            ToAttackState();
+        }
         if (!PlayerInPursuitRange())
         {
             enemy.animator.SetBool(enemy.walkingAnimationBool, false);
@@ -81,6 +97,11 @@ public class ChaseState : IEnemyState
     {
         if (pathFound)
             movementHandler.Reset(enemy.gameObject, newPath, enemy.characterSpeed);
+    }
+
+    protected bool PlayerInAttackRange()
+    {
+        return DirectionAndDistanceCalculator.CalculateDistance(enemy.transform.Get2DPosition(), enemy.player.Get2DPosition()) <= enemy.attackRange;
     }
 
     protected bool PlayerInPursuitRange()

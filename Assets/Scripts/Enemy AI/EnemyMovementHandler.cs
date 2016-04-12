@@ -16,24 +16,29 @@ public class EnemyMovementHandler {
         targetIndex = 0;
     }
 
-    public void Reset(GameObject go, Vector2[] _path, float speed)
+    public void DrawPath()
     {
-        if (_path == null || _path.Length <= 0)
+        if (!PathEmpty())
         {
-            Debug.Log("path null");
-            return;
+            for (int i = 1; i < path.Length; i++)
+            {
+                Gizmos.color = Color.black;
+                Gizmos.DrawCube(new Vector3(path[i].x, path[i].y, 0.6f), new Vector3(0.1f, 0.1f, 0.1f));
+                if (i == targetIndex)
+                {
+                    Gizmos.DrawLine(gameObject.transform.position, path[i]);
+                }
+                else
+                {
+                    Gizmos.DrawLine(path[i - 1], path[i]);
+                }
+            }
         }
-        gameObject = go;
-        path = _path;
-        charSpeed = speed;
-        targetIndex = 0;
-        currentWayPoint = path[targetIndex];
     }
 
-    public void ResetToZero()
+    public Vector2 GetMovementDirection()
     {
-        path = null;
-        targetIndex = 0;
+        return DirectionAndDistanceCalculator.CalculateSignedDirection(gameObject.transform.Get2DPosition(), currentWayPoint);
     }
 
     public void MoveAlongPath()
@@ -56,13 +61,29 @@ public class EnemyMovementHandler {
         }
     }
 
+    public void Reset(GameObject go, Vector2[] _path, float speed)
+    {
+        if (_path == null || _path.Length <= 0)
+        {
+            Debug.Log("path null");
+            return;
+        }
+        gameObject = go;
+        path = _path;
+        charSpeed = speed;
+        targetIndex = 0;
+        currentWayPoint = path[targetIndex];
+    }
+
+    public void ResetToZero()
+    {
+        path = null;
+        targetIndex = 0;
+    }
+
     public bool PathEmpty()
     {
         return path == null || path.Length <= 0;
     }
 
-    public Vector2 GetMovementDirection()
-    {
-        return DirectionAndDistanceCalculator.CalculateSignedDirection(gameObject.transform.Get2DPosition(), currentWayPoint);
-    }
 }

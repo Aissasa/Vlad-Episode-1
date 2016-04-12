@@ -3,6 +3,12 @@ using System.Collections;
 
 public interface IEnemyState {
 
+    void DrawGizmos();
+
+    void ResetVariables();
+
+    void ToAttackState();
+
     void ToPatrolState();
 
     void ToChaseState();
@@ -10,7 +16,6 @@ public interface IEnemyState {
     void ToLookOutState();
 
     void UpdateState();
-
-    void ResetVariables();
+    
 
 }

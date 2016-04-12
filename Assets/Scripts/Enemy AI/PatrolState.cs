@@ -17,11 +17,21 @@ public class PatrolState : IEnemyState
         nextWaypointIndex = 0;
     }
 
+    public void DrawGizmos()
+    {
+        movementHandler.DrawPath();
+    }
+
     public void ResetVariables()
     {
         movementHandler.ResetToZero();
         patrolWaitTimer = 0;
         nextWaypointIndex = 0;
+    }
+
+    public void ToAttackState()
+    {
+        Debug.Log("Cant go from patrol to attack directly");
     }
 
     public void ToChaseState()
@@ -93,4 +103,5 @@ public class PatrolState : IEnemyState
     {
         return DirectionAndDistanceCalculator.CalculateDistance(enemy.transform.Get2DPosition(), enemy.player.Get2DPosition()) <= enemy.chasingRange;
     }
+
 }

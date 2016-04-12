@@ -6,8 +6,6 @@ using System;
 
 public class Pathfinding : MonoBehaviour
 {
-    //public Transform playerPosition;
-
     PathRequestManager requestManager;
     List<Node> shortestPath;
     GameObject currentGameObject;
@@ -20,10 +18,6 @@ public class Pathfinding : MonoBehaviour
     void Awake()
     {
         grid = GetComponent<Grid>();
-        //if (playerPosition == null)
-        //{
-        //    playerPosition = GameObject.FindGameObjectWithTag("Player").transform;
-        //}
         requestManager = GetComponent<PathRequestManager>();
     }
 
@@ -35,7 +29,6 @@ public class Pathfinding : MonoBehaviour
         Vector2 collider;
         if (!ObstacleFinder.Instance.CheckObstacles(currentGameObject, currentGameObject.transform.Get2DPosition(), targetPos, currentLayerMask, out collider))
         {
-            UnityEngine.Debug.Log("Direct with object " + currentGameObject.name);
             requestManager.FinishedProcessingPath(new Vector2[] { targetPos }, true);
         }
         else
@@ -105,10 +98,10 @@ public class Pathfinding : MonoBehaviour
             wayPoints = RetracePath(startNode, targetNode);
             wayPoints = PathRefiner.Instance.RefineAndSmoothPath(currentGameObject, wayPoints, currentLayerMask, currentBezierInterpolationRange);
         }
-        // note : test
-        List<Vector2> list = new List<Vector2>(wayPoints);
-        list.Add(targetPos);
-        requestManager.FinishedProcessingPath(list.ToArray(), pathFindingSuccess);
+        // note : test 
+        //List<Vector2> list = new List<Vector2>(wayPoints);
+        //list.Add(targetPos);
+        requestManager.FinishedProcessingPath(wayPoints, pathFindingSuccess);
     }
 
     int GetDistance(Node node1, Node node2)
@@ -135,7 +128,6 @@ public class Pathfinding : MonoBehaviour
             currentNode = currentNode.parent;
         }
         return ReverseAndConvert(shortestPath);
-        //return SimplifyAndReversePath(shortestPath);
     }
 
     private Vector2[] ReverseAndConvert(List<Node> path)
@@ -147,27 +139,6 @@ public class Pathfinding : MonoBehaviour
             wayPoints.Add(node.worldPosition);
         }
 
-        wayPoints.Reverse();
-        return wayPoints.ToArray();
-    }
-
-    // todo : delete this
-    Vector2[] SimplifyAndReversePath(List<Node> path)
-    {
-        List<Vector2> wayPoints = new List<Vector2>();
-        // note :test
-        //wayPoints.Add(path[0].worldPosition);
-        Vector2 directionOld = Vector2.zero;
-
-        for (int i = 1; i < path.Count; i++)
-        {
-            Vector2 directionNew = CalculateDirection(path[i - 1], path[i]);
-            if (directionNew != directionOld)
-            {
-                wayPoints.Add(path[i].worldPosition);
-            }
-            directionOld = directionNew;
-        }
         wayPoints.Reverse();
         return wayPoints.ToArray();
     }

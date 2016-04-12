@@ -8,7 +8,7 @@ public class EnemyStateHandler : MonoBehaviour
     public PatrolState patrolState { get; protected set; }
     public ChaseState chaseState { get; protected set; }
     public LookOutState lookOutState { get; protected set; }
-    // new : add attack state
+    public AttackState attackState { get; protected set; }
 
     public Transform spawnPosition;       // the position of first spawn
     public bool displayPathGizmos; // display gizmos or not
@@ -19,6 +19,9 @@ public class EnemyStateHandler : MonoBehaviour
 
     [Range(0.1f, 10f)]
     public float inPatrolPointDelay;       // how much to wait in patrol point
+
+    [Range(0.5f, 10f)]
+    public float attackDelay;       // delay between attacks
 
     [Range(0.05f, 1)]
     public float pathRefreshDelay;      // refresh rate for pathfinding
@@ -82,6 +85,7 @@ public class EnemyStateHandler : MonoBehaviour
         patrolState = new PatrolState(this);
         chaseState = new ChaseState(this);
         lookOutState = new LookOutState(this);
+        attackState = new AttackState(this);
         // todo : add this : use list
         //if (patrolWaypoints == null || patrolWaypoints.Length<1)
         //{
@@ -115,10 +119,7 @@ public class EnemyStateHandler : MonoBehaviour
     public void Flip()
     {
         isFacingRight = !isFacingRight;
-        //spriteRenderer.flipX = !spriteRenderer.flipX;
-        Vector3 theScale = transform.localScale;
-        theScale.x *= -1;
-        transform.localScale = theScale;
+        spriteRenderer.flipX = !spriteRenderer.flipX; 
     }
 
     public MyAnimationState GetAnimationState()
@@ -142,6 +143,18 @@ public class EnemyStateHandler : MonoBehaviour
         else
         {
             return MyAnimationState.Idle;
+        }
+    }
+
+    protected void OnDrawGizmos()
+    {
+        if (currentEnemyState == null)
+        {
+            return;
+        }
+        if (displayPathGizmos)
+        {
+            currentEnemyState.DrawGizmos();
         }
     }
 
