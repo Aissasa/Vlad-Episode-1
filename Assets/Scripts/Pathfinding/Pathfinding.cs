@@ -6,7 +6,7 @@ using System;
 
 public class Pathfinding : MonoBehaviour
 {
-    public Transform playerPosition;
+    //public Transform playerPosition;
 
     PathRequestManager requestManager;
     List<Node> shortestPath;
@@ -20,10 +20,10 @@ public class Pathfinding : MonoBehaviour
     void Awake()
     {
         grid = GetComponent<Grid>();
-        if (playerPosition == null)
-        {
-            playerPosition = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
-        }
+        //if (playerPosition == null)
+        //{
+        //    playerPosition = GameObject.FindGameObjectWithTag("Player").transform;
+        //}
         requestManager = GetComponent<PathRequestManager>();
     }
 
@@ -33,8 +33,11 @@ public class Pathfinding : MonoBehaviour
         currentLayerMask = layerMask;
         currentBezierInterpolationRange = bezierInterpolationRange;
         Vector2 collider;
-        if (!ObstacleFinder.Instance.CheckObstacles(currentGameObject, currentGameObject.transform.Get2DPosition(), playerPosition.Get2DPosition(), currentLayerMask, out collider))
-            requestManager.FinishedProcessingPath(new Vector2[] { playerPosition.Get2DPosition() }, true);
+        if (!ObstacleFinder.Instance.CheckObstacles(currentGameObject, currentGameObject.transform.Get2DPosition(), targetPos, currentLayerMask, out collider))
+        {
+            UnityEngine.Debug.Log("Direct with object " + currentGameObject.name);
+            requestManager.FinishedProcessingPath(new Vector2[] { targetPos }, true);
+        }
         else
             StartCoroutine(FindPath(startPos, targetPos));
     }
@@ -53,56 +56,59 @@ public class Pathfinding : MonoBehaviour
         Node startNode = grid.NodeFromWorldPoint(startPos);
         Node targetNode = grid.NodeFromWorldPoint(targetPos);
 
-        // todo : maybe add this optimisation
-        //if (startNode.walkable && targetNode.walkable)
-
-        Heap<Node> openSet = new Heap<Node>(grid.MaxSize);
-        HashSet<Node> closedSet = new HashSet<Node>();
-        openSet.Add(startNode);
-        while (openSet.Count > 0)
+        if (startNode.walkable && targetNode.walkable)
         {
-            Node currentNode = openSet.RemoveFirstItem();
-            closedSet.Add(currentNode);
 
-            if (currentNode == targetNode)
+            Heap<Node> openSet = new Heap<Node>(grid.MaxSize);
+            HashSet<Node> closedSet = new HashSet<Node>();
+            openSet.Add(startNode);
+            while (openSet.Count > 0)
             {
-                pathFindingSuccess = true;
-                break;
-            }
+                Node currentNode = openSet.RemoveFirstItem();
+                closedSet.Add(currentNode);
 
-            foreach (var neighbor in grid.GetNeighbors(currentNode))
-            {
-                if (!neighbor.walkable || closedSet.Contains(neighbor))
+                if (currentNode == targetNode)
                 {
-                    continue;
+                    pathFindingSuccess = true;
+                    break;
                 }
 
-                int newMouvementCostToNeighbor = currentNode.gCost + GetDistance(currentNode, neighbor);
-                if (newMouvementCostToNeighbor < neighbor.gCost || !openSet.Contains(neighbor))
+                foreach (var neighbor in grid.GetNeighbors(currentNode))
                 {
-                    neighbor.gCost = newMouvementCostToNeighbor;
-                    neighbor.hCost = GetDistance(neighbor, targetNode);
-                    neighbor.parent = currentNode;
-
-                    if (!openSet.Contains(neighbor))
+                    if (!neighbor.walkable || closedSet.Contains(neighbor))
                     {
-                        openSet.Add(neighbor);
+                        continue;
                     }
-                    else
+
+                    int newMouvementCostToNeighbor = currentNode.gCost + GetDistance(currentNode, neighbor);
+                    if (newMouvementCostToNeighbor < neighbor.gCost || !openSet.Contains(neighbor))
                     {
-                        openSet.UpdateItem(neighbor);
+                        neighbor.gCost = newMouvementCostToNeighbor;
+                        neighbor.hCost = GetDistance(neighbor, targetNode);
+                        neighbor.parent = currentNode;
+
+                        if (!openSet.Contains(neighbor))
+                        {
+                            openSet.Add(neighbor);
+                        }
+                        else
+                        {
+                            openSet.UpdateItem(neighbor);
+                        }
                     }
                 }
             }
+            yield return null;
         }
-        yield return null;
-
         if (pathFindingSuccess)
         {
             wayPoints = RetracePath(startNode, targetNode);
             wayPoints = PathRefiner.Instance.RefineAndSmoothPath(currentGameObject, wayPoints, currentLayerMask, currentBezierInterpolationRange);
         }
-        requestManager.FinishedProcessingPath(wayPoints, pathFindingSuccess);
+        // note : test
+        List<Vector2> list = new List<Vector2>(wayPoints);
+        list.Add(targetPos);
+        requestManager.FinishedProcessingPath(list.ToArray(), pathFindingSuccess);
     }
 
     int GetDistance(Node node1, Node node2)

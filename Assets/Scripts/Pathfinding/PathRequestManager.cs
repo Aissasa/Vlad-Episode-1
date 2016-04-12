@@ -3,7 +3,8 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 
-public class PathRequestManager : MonoBehaviour {
+public class PathRequestManager : MonoBehaviour
+{
 
     Queue<PathRequest> pathRequestQueue = new Queue<PathRequest>();
     PathRequest currentPathRequest;
@@ -19,7 +20,7 @@ public class PathRequestManager : MonoBehaviour {
         pathfinding = GetComponent<Pathfinding>();
     }
 
-    public static void RequestPath (Vector2 pathStart, Vector2 pathEnd, GameObject go, LayerMask unwalkableLayer, float bezierInterpolationRange, Action<Vector2[], bool> callback)
+    public static void RequestPath(Vector2 pathStart, Vector2 pathEnd, GameObject go, LayerMask unwalkableLayer, float bezierInterpolationRange, Action<Vector2[], bool> callback)
     {
         PathRequest newRequest = new PathRequest(pathStart, pathEnd, go, unwalkableLayer, bezierInterpolationRange, callback);
         instance.pathRequestQueue.Enqueue(newRequest);
@@ -40,7 +41,7 @@ public class PathRequestManager : MonoBehaviour {
         {
             currentPathRequest = pathRequestQueue.Dequeue();
             isProcessingPath = true;
-            pathfinding.StartPathFinding(currentPathRequest.pathStart, currentPathRequest.pathEnd, 
+            pathfinding.StartPathFinding(currentPathRequest.pathStart, currentPathRequest.pathEnd,
                 currentPathRequest.go, currentPathRequest.unwalkableLayer, currentPathRequest.bezierInterpolationRange);
         }
     }

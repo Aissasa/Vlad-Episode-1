@@ -23,6 +23,11 @@ public class PathRefiner {
 
     public Vector2[] RefinePath(GameObject go, Vector2[] path, LayerMask unwalkableLayer)
     {
+        if (path == null || path.Length <= 0)
+        {
+            return path;
+        }
+
         List<Vector2> refinedPath = new List<Vector2>(path);
         Vector2 colliderPosition;
 
@@ -60,22 +65,19 @@ public class PathRefiner {
                             newPoint = new Vector2(endPos.x, startPos.y);
                         }
                     }
-
                     refinedPath.Insert(i, newPoint);
                 }
             }
-
             i++;
         }
-
         return refinedPath.ToArray();
     }
 
     public Vector2[] SmoothPath(GameObject go, Vector2[] path, LayerMask unwalkableLayer)
     {
-        if (path == null)
+        if (path == null || path.Length<=0)
         {
-            return null ;
+            return path ;
         }
         Vector2 checkPoint = path[0];
         Vector2 currentPoint;
@@ -92,13 +94,17 @@ public class PathRefiner {
                 smootherPath.Add(checkPoint);
             }
         }
-
         smootherPath.Add(path[path.Length - 1]);
         return smootherPath.ToArray();
     }
 
     public Vector2[] BezierInterpolate(Vector2[] path, float bezierInterpolationRange)
     {
+        if (path == null || path.Length <= 0)
+        {
+            return path;
+        }
+
         bezierPath = new BezierPath();
         List<Vector2> thePath = new List<Vector2>(path);
         bezierPath.Interpolate(thePath, bezierInterpolationRange);
@@ -108,6 +114,10 @@ public class PathRefiner {
 
     public Vector2[] RefineAndSmoothPath(GameObject gameObject, Vector2[] path, LayerMask unwalkableLayer, float bezierInterpolationRange = 0.25f)
     {
+        if (path == null || path.Length<=0)
+        {
+            return path;
+        }
         Vector2[] newPath = RefinePath(gameObject, path, unwalkableLayer);
         newPath = SmoothPath(gameObject, newPath, unwalkableLayer);
         return BezierInterpolate(newPath, bezierInterpolationRange);

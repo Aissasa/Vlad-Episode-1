@@ -33,7 +33,7 @@ public class EnemyController : GenericCharacterController
     {
         if (pathFound)
         {
-            // todo :  delete
+            // todo :  delete this
             //if (path == null || path.Length <= 0)
             //{
             //    path = newPath;
@@ -113,7 +113,7 @@ public class EnemyController : GenericCharacterController
 
         if (isChasing)
         {
-            LinearMouvement.Instance().MoveToPosition(gameObject, currentWayPoint, characterSpeed);
+            LinearMouvement.Instance.MoveToPosition(gameObject, currentWayPoint, characterSpeed);
             if (transform.Get2DPosition() == currentWayPoint)
             {
                 targetIndex++;

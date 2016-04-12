@@ -84,6 +84,7 @@
     <Compile Include="Assets\Scripts\Characters Controllers\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Data\BasicStats.cs" />
     <Compile Include="Assets\Scripts\Enemy AI\ChaseState.cs" />
+    <Compile Include="Assets\Scripts\Enemy AI\EnemyMovementHandler.cs" />
     <Compile Include="Assets\Scripts\Enemy AI\EnemyStateHandler.cs" />
     <Compile Include="Assets\Scripts\Enemy AI\IEnemyState.cs" />
     <Compile Include="Assets\Scripts\Enemy AI\LookOutState.cs" />

@@ -4,14 +4,24 @@ using System;
 
 public class LookOutState : IEnemyState
 {
-    public void OntriggerEnter(Collider other)
+    protected readonly EnemyStateHandler enemy;
+    protected float lookOutTimer;
+
+    public LookOutState(EnemyStateHandler enemyState)
     {
-        throw new NotImplementedException();
+        enemy = enemyState;
+        ResetVariables();
+    }
+
+    public void ResetVariables()
+    {
+        lookOutTimer = enemy.lookOutDelay;
     }
 
     public void ToChaseState()
     {
-        throw new NotImplementedException();
+        ResetVariables();
+        enemy.currentEnemyState = enemy.chaseState;
     }
 
     public void ToLookOutState()
@@ -21,11 +31,26 @@ public class LookOutState : IEnemyState
 
     public void ToPatrolState()
     {
-        throw new NotImplementedException();
+        ResetVariables();
+        enemy.currentEnemyState = enemy.patrolState;
     }
 
     public void UpdateState()
     {
-        throw new NotImplementedException();
+        if (PlayerInChasingRange())
+        {
+            ToChaseState();
+        }
+        if (lookOutTimer<= 0)
+        {
+            ToPatrolState();
+        }
+        lookOutTimer -= Time.deltaTime;
     }
+
+    protected bool PlayerInChasingRange()
+    {
+        return DirectionAndDistanceCalculator.CalculateDistance(enemy.transform.Get2DPosition(), enemy.player.Get2DPosition()) <= enemy.chasingRange;
+    }
+
 }
