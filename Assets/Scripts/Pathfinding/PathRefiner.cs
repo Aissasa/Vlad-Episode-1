@@ -98,7 +98,7 @@ public class PathRefiner {
         return smootherPath.ToArray();
     }
 
-    public Vector2[] BezierInterpolate(Vector2[] path, float bezierInterpolationRange)
+    public Vector2[] BezierInterpolate(Vector2[] path)
     {
         if (path == null || path.Length <= 0)
         {
@@ -107,12 +107,12 @@ public class PathRefiner {
 
         bezierPath = new BezierPath();
         List<Vector2> thePath = new List<Vector2>(path);
-        bezierPath.Interpolate(thePath, bezierInterpolationRange);
+        bezierPath.Interpolate(thePath, GameManager.Instance.bezierInterpolationRange);
 
         return bezierPath.GetPathPoints().ToArray();
     }
 
-    public Vector2[] RefineAndSmoothPath(GameObject gameObject, Vector2[] path, LayerMask unwalkableLayer, float bezierInterpolationRange = 0.25f)
+    public Vector2[] RefineAndSmoothPath(GameObject gameObject, Vector2[] path, LayerMask unwalkableLayer)
     {
         if (path == null || path.Length<=0)
         {
@@ -120,7 +120,7 @@ public class PathRefiner {
         }
         Vector2[] newPath = RefinePath(gameObject, path, unwalkableLayer);
         newPath = SmoothPath(gameObject, newPath, unwalkableLayer);
-        return BezierInterpolate(newPath, bezierInterpolationRange);
+        return BezierInterpolate(newPath);
     }
 
 }

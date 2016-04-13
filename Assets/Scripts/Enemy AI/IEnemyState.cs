@@ -1,21 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public interface IEnemyState {
+namespace EnemyAI
+{
+    public interface IEnemyState
+    {
 
-    void DrawGizmos();
+        void DrawGizmos();
 
-    void ResetVariables();
+        void ResetVariables();
 
-    void ToAttackState();
+        void ToAttackState();
 
-    void ToPatrolState();
+        void ToPatrolState();
 
-    void ToChaseState();
+        void ToChaseState();
 
-    void ToLookOutState();
+        void ToLookOutState();
 
-    void UpdateState();
-    
+        void UpdateState();
 
+    }
 }

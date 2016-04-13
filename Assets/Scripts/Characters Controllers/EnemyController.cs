@@ -175,7 +175,7 @@ public class EnemyController : GenericCharacterController
         }
         if (!isChasing && PlayerInChasingRange() || isChasing && PlayerInPursuitRange())
         {
-            PathRequestManager.RequestPath(transform.position, player.position, gameObject, unwalkableLayer, bezierInterpolationRange, OnPathFound);
+            PathRequestManager.RequestPath(transform.position, player.position, gameObject, unwalkableLayer, OnPathFound);
             isChasing = true;
         }
         else

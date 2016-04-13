@@ -90,6 +90,8 @@
     <Compile Include="Assets\Scripts\Enemy AI\IEnemyState.cs" />
     <Compile Include="Assets\Scripts\Enemy AI\LookOutState.cs" />
     <Compile Include="Assets\Scripts\Enemy AI\PatrolState.cs" />
+    <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
+    <Compile Include="Assets\Scripts\Managers\RenderingManager.cs" />
     <Compile Include="Assets\Scripts\Maps Contollers\ScreenFader.cs" />
     <Compile Include="Assets\Scripts\Maps Contollers\Warper.cs" />
     <Compile Include="Assets\Scripts\Mouvement\BezierPath.cs" />
@@ -103,11 +105,14 @@
     <Compile Include="Assets\Scripts\Pathfinding\PathRefiner.cs" />
     <Compile Include="Assets\Scripts\Pathfinding\PathRequestManager.cs" />
     <Compile Include="Assets\Scripts\Pathfinding\Pathfinding.cs" />
-    <Compile Include="Assets\Scripts\RenderingManager.cs" />
+    <Compile Include="Assets\Scripts\Player\AttackState.cs" />
+    <Compile Include="Assets\Scripts\Player\IPlayerState.cs" />
+    <Compile Include="Assets\Scripts\Player\IdleState.cs" />
+    <Compile Include="Assets\Scripts\Player\MoveState.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerStateHandler.cs" />
     <Compile Include="Assets\Scripts\Util\DirectionAndDistanceCalculator.cs" />
     <Compile Include="Assets\Scripts\Util\ExtentionMethods.cs" />
     <Compile Include="Assets\Scripts\Util\PositionComparer.cs" />
-    <Compile Include="Assets\Scripts\Util\Singleton.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\ImportBehaviour.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\SortingLayerExposed.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\TileAnimator.cs" />

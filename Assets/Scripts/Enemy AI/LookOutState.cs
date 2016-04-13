@@ -2,65 +2,68 @@
 using System.Collections;
 using System;
 
-public class LookOutState : IEnemyState
+namespace EnemyAI
 {
-    protected readonly EnemyStateHandler enemy;
-    protected float lookOutTimer;
-
-    public LookOutState(EnemyStateHandler enemyState)
+    public class LookOutState : IEnemyState
     {
-        enemy = enemyState;
-        ResetVariables();
-    }
+        protected readonly EnemyStateHandler enemy;
+        protected float lookOutTimer;
 
-    public void DrawGizmos()
-    {
-        Debug.Log("Nothing to draw in lookout");
-    }
-
-    public void ResetVariables()
-    {
-        lookOutTimer = enemy.lookOutDelay;
-    }
-
-    public void ToAttackState()
-    {
-        Debug.Log("Cant go to from lookout to attack directly");
-    }
-
-    public void ToChaseState()
-    {
-        ResetVariables();
-        enemy.currentEnemyState = enemy.chaseState;
-    }
-
-    public void ToLookOutState()
-    {
-        Debug.Log("Cant go to the same state");
-    }
-
-    public void ToPatrolState()
-    {
-        ResetVariables();
-        enemy.currentEnemyState = enemy.patrolState;
-    }
-
-    public void UpdateState()
-    {
-        if (PlayerInChasingRange())
+        public LookOutState(EnemyStateHandler enemyState)
         {
-            ToChaseState();
+            enemy = enemyState;
+            ResetVariables();
         }
-        if (lookOutTimer<= 0)
+
+        public void DrawGizmos()
         {
-            ToPatrolState();
+            Debug.Log("Nothing to draw in lookout");
         }
-        lookOutTimer -= Time.deltaTime;
-    }
 
-    protected bool PlayerInChasingRange()
-    {
-        return DirectionAndDistanceCalculator.CalculateDistance(enemy.transform.Get2DPosition(), enemy.player.Get2DPosition()) <= enemy.chasingRange;
-    }
+        public void ResetVariables()
+        {
+            lookOutTimer = enemy.lookOutDelay;
+        }
 
+        public void ToAttackState()
+        {
+            Debug.Log("Cant go to from lookout to attack directly");
+        }
+
+        public void ToChaseState()
+        {
+            ResetVariables();
+            enemy.currentEnemyState = enemy.chaseState;
+        }
+
+        public void ToLookOutState()
+        {
+            Debug.Log("Cant go to the same state");
+        }
+
+        public void ToPatrolState()
+        {
+            ResetVariables();
+            enemy.currentEnemyState = enemy.patrolState;
+        }
+
+        public void UpdateState()
+        {
+            if (PlayerInChasingRange())
+            {
+                ToChaseState();
+            }
+            if (lookOutTimer <= 0)
+            {
+                ToPatrolState();
+            }
+            lookOutTimer -= Time.deltaTime;
+        }
+
+        protected bool PlayerInChasingRange()
+        {
+            return DirectionAndDistanceCalculator.CalculateDistance(enemy.transform.Get2DPosition(), enemy.player.Get2DPosition()) <= enemy.chasingRange;
+        }
+
+    }
 }

@@ -2,88 +2,94 @@
 using System.Collections;
 using System;
 
-public class EnemyMovementHandler {
-
-    public GameObject gameObject { get; set; }
-    public Vector2[] path { get; set; }
-    public int targetIndex { get; set; }
-    public Vector2 currentWayPoint { get; set; }
-    public float charSpeed { get; set; }
-
-    public EnemyMovementHandler(GameObject go)
+namespace EnemyAI
+{
+    public class EnemyMovementHandler
     {
-        gameObject = go;
-        targetIndex = 0;
-    }
 
-    public void DrawPath()
-    {
-        if (!PathEmpty())
+        public GameObject gameObject { get; set; }
+        public Vector2[] path { get; set; }
+        public int targetIndex { get; set; }
+        public Vector2 currentWayPoint { get; set; }
+        public float charSpeed { get; set; }
+
+        public EnemyMovementHandler(GameObject go)
         {
-            for (int i = 1; i < path.Length; i++)
+            gameObject = go;
+            targetIndex = 0;
+        }
+
+        public void DrawPath()
+        {
+            if (!PathEmpty())
             {
-                Gizmos.color = Color.black;
-                Gizmos.DrawCube(new Vector3(path[i].x, path[i].y, 0.6f), new Vector3(0.1f, 0.1f, 0.1f));
-                if (i == targetIndex)
+                for (int i = 1; i < path.Length; i++)
                 {
-                    Gizmos.DrawLine(gameObject.transform.position, path[i]);
-                }
-                else
-                {
-                    Gizmos.DrawLine(path[i - 1], path[i]);
+                    Gizmos.color = Color.black;
+                    Gizmos.DrawCube(new Vector3(path[i].x, path[i].y, 0.6f), new Vector3(0.1f, 0.1f, 0.1f));
+                    if (i == targetIndex)
+                    {
+                        Gizmos.DrawLine(gameObject.transform.position, path[i]);
+                    }
+                    else
+                    {
+                        Gizmos.DrawLine(path[i - 1], path[i]);
+                    }
                 }
             }
         }
-    }
 
-    public Vector2 GetMovementDirection()
-    {
-        return DirectionAndDistanceCalculator.CalculateSignedDirection(gameObject.transform.Get2DPosition(), currentWayPoint);
-    }
-
-    public void MoveAlongPath()
-    {
-        if (path == null || path.Length <= 0)
+        public Vector2 GetMovementDirection()
         {
-            return;
+            return DirectionAndDistanceCalculator.CalculateSignedDirection(gameObject.transform.Get2DPosition(), currentWayPoint);
         }
 
-        LinearMouvement.Instance.MoveToPosition(gameObject, currentWayPoint, charSpeed);
-        if (gameObject.transform.Get2DPosition() == currentWayPoint)
+        public void MoveAlongPath()
         {
-            targetIndex++;
-            if (targetIndex >= path.Length)
+            if (path == null || path.Length <= 0)
             {
-                path = null;
                 return;
             }
+
+            LinearMouvement.Instance.MoveToPosition(gameObject, currentWayPoint, charSpeed);
+            // note : move along path with == or with distance
+            if (gameObject.transform.Get2DPosition() == currentWayPoint)
+            //if( DirectionAndDistanceCalculator.CalculateDistance(gameObject.transform.Get2DPosition(), currentWayPoint)<= GameManager.Instance.aiReachingPrecision)
+            {
+                targetIndex++;
+                if (targetIndex >= path.Length)
+                {
+                    path = null;
+                    return;
+                }
+                currentWayPoint = path[targetIndex];
+            }
+        }
+
+        public void Reset(GameObject go, Vector2[] _path, float speed)
+        {
+            if (_path == null || _path.Length <= 0)
+            {
+                Debug.Log("path null");
+                return;
+            }
+            gameObject = go;
+            path = _path;
+            charSpeed = speed;
+            targetIndex = 0;
             currentWayPoint = path[targetIndex];
         }
-    }
 
-    public void Reset(GameObject go, Vector2[] _path, float speed)
-    {
-        if (_path == null || _path.Length <= 0)
+        public void ResetToZero()
         {
-            Debug.Log("path null");
-            return;
+            path = null;
+            targetIndex = 0;
         }
-        gameObject = go;
-        path = _path;
-        charSpeed = speed;
-        targetIndex = 0;
-        currentWayPoint = path[targetIndex];
-    }
 
-    public void ResetToZero()
-    {
-        path = null;
-        targetIndex = 0;
-    }
+        public bool PathEmpty()
+        {
+            return path == null || path.Length <= 0;
+        }
 
-    public bool PathEmpty()
-    {
-        return path == null || path.Length <= 0;
     }
-
 }

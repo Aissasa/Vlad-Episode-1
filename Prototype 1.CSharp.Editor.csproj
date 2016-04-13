@@ -131,6 +131,8 @@
   <ItemGroup>
     <Compile Include="Assets\Editor\EnemyControllerEditor.cs" />
     <Compile Include="Assets\Editor\EnemyStateEditor.cs" />
+    <Compile Include="Assets\Editor\GameManagerEditor.cs" />
+    <Compile Include="Assets\Editor\PlayerStateEditor.cs" />
     <Compile Include="Assets\Editor\TweakableEditor.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Editor\CustomTiledImporterAttribute.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Editor\ICustomTiledImporter.cs" />

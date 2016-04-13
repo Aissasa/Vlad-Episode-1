@@ -10,7 +10,6 @@ public class Pathfinding : MonoBehaviour
     List<Node> shortestPath;
     GameObject currentGameObject;
     LayerMask currentLayerMask;
-    float currentBezierInterpolationRange;
 
     Grid grid;
     int diagonalCost = 14, lateralCost = 10;
@@ -21,11 +20,10 @@ public class Pathfinding : MonoBehaviour
         requestManager = GetComponent<PathRequestManager>();
     }
 
-    public void StartPathFinding(Vector2 startPos, Vector2 targetPos, GameObject go, LayerMask layerMask, float bezierInterpolationRange)
+    public void StartPathFinding(Vector2 startPos, Vector2 targetPos, GameObject go, LayerMask layerMask)
     {
         currentGameObject = go;
         currentLayerMask = layerMask;
-        currentBezierInterpolationRange = bezierInterpolationRange;
         Vector2 collider;
         if (!ObstacleFinder.Instance.CheckObstacles(currentGameObject, currentGameObject.transform.Get2DPosition(), targetPos, currentLayerMask, out collider))
         {
@@ -96,7 +94,7 @@ public class Pathfinding : MonoBehaviour
         if (pathFindingSuccess)
         {
             wayPoints = RetracePath(startNode, targetNode);
-            wayPoints = PathRefiner.Instance.RefineAndSmoothPath(currentGameObject, wayPoints, currentLayerMask, currentBezierInterpolationRange);
+            wayPoints = PathRefiner.Instance.RefineAndSmoothPath(currentGameObject, wayPoints, currentLayerMask);
         }
         // note : test 
         //List<Vector2> list = new List<Vector2>(wayPoints);
