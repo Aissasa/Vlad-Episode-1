@@ -4,9 +4,9 @@ using System;
 
 namespace PlayerLogic
 {
-    public class PlayerStateHandler : MonoBehaviour
+    public class PlayerStateHandler : MonoBehaviour, IDamageable, ICombatEffect
     {
-
+        // urgent : add look at to player and enemy when hit
         public IPlayerState currentPlayerState { get; set; }
         public AttackState attackState { get; protected set; }
         public IdleState idleState { get; protected set; }
@@ -38,9 +38,20 @@ namespace PlayerLogic
         public Vector2 movementVector { get; protected set; }
         public bool isAttacking { get; set; }
 
+        public BasicStats stats { get; protected set; }
+
+
         public Transform spawnPosition;
+        public LayerMask damageableLayer;
         [Range(0.1f, 10f)]
-        public float playerSpeed;   
+        public float playerSpeed;
+        // todo : may change depending on the weapon rather than here
+        [Range(0.1f, 10f)]
+        public float playerAttackRange;
+
+        protected BasicStats.AttackOutcome outcome;
+        protected bool isDead;
+        
 
         protected void Awake()
         {
@@ -50,6 +61,8 @@ namespace PlayerLogic
             attackState = new AttackState(this);
             idleState = new IdleState(this);
             moveState = new MoveState(this);
+
+            stats = BasicStats.PlayerTest();
         }
 
         protected void Start()
@@ -60,6 +73,7 @@ namespace PlayerLogic
             else
                 isFacingRight = true;
             isAttacking = false;
+            isDead = false;
         }
 
         protected void Update()
@@ -85,47 +99,11 @@ namespace PlayerLogic
                     return true;
             }
         }
-    
-        protected void DetectAttack()
-        {
-            // new implement attacking logic here, maybe launch an event , make a raycast and detect the enemies hit, and the sub is a damage handler, that makes calculations
-            if (Input.GetButton("Attack"))
-            {
-                isAttacking = true;
-            }
-
-            if (Input.GetButtonUp("Attack"))
-            {
-                isAttacking = false;
-            }
-        }
 
         public void Flip()
         {
             isFacingRight = !isFacingRight;
             spriteRenderer.flipX = !spriteRenderer.flipX;
-        }
-
-        protected void Spawn()
-        {
-            if (spawnPosition != null)
-            {
-                transform.position = spawnPosition.position;
-            }
-        }
-
-        protected void UpdateMovementVector()
-        {
-            movementVector = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        }
-
-        public enum MyAnimationState
-        {
-            Idle,
-            Walk,
-            Attack,
-            Hit,
-            Dead
         }
 
         public MyAnimationState GetAnimationState()
@@ -151,6 +129,86 @@ namespace PlayerLogic
                 return MyAnimationState.Idle;
             }
         }
+
+        public void TakeDamage(BasicStats attackerStats)
+        {
+            if (isDead)
+            {
+                return;
+            }
+            int damage = DamageCalculationManager.Instance.CalculateInflictedDamage(attackerStats, stats, out outcome);
+            UpdateHealth(damage);
+            if (stats.currentHealth <= 0)
+            {
+                isDead = true;
+                Debug.Log("Player is dead !");
+                anim.SetTrigger(dyingAnimationTrigger);
+                enabled = false;
+            }
+        }
+
+        protected void DetectAttack()
+        {
+            // new implement attacking logic here, maybe launch an event , make a raycast and detect the enemies hit, 
+            // and the sub is a damage handler, that makes calculations
+            if (Input.GetButton("Attack"))
+            {
+                isAttacking = true;
+            }
+
+            if (Input.GetButtonUp("Attack"))
+            {
+                isAttacking = false;
+            }
+        }
+
+        protected void Spawn()
+        {
+            if (spawnPosition != null)
+            {
+                transform.position = spawnPosition.position;
+            }
+        }
+
+        protected void UpdateHealth(int damage)
+        {
+            if (damage>stats.currentHealth)
+            {
+                stats.currentHealth = 0;
+            }
+            else
+            {
+                stats.currentHealth -= damage;
+            }
+            Debug.Log(outcome + " => Damage inflicted by enemy = " + damage);
+            Debug.Log("Player health : " + stats.currentHealth + "/" + stats.maxHealth);
+        }
+
+        protected void UpdateMovementVector()
+        {
+            movementVector = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        }
+
+        public void ShowCombatEffects()
+        {
+            // todo : attack outcome
+            Debug.Log(outcome);
+        }
+
+        public enum MyAnimationState
+        {
+            Idle,
+            Walk,
+            Attack,
+            Hit,
+            Dead
+        }
+
+        // ps : for debug
+        //void OnDrawGizmos()
+        //{
+        //    Gizmos.DrawSphere(spriteRenderer.bounds.center, 0.02f);
+        //}
     }
 
 }

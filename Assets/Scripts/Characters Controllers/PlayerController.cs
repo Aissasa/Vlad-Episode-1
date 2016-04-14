@@ -27,7 +27,7 @@ public class PlayerController : GenericCharacterController
         base.Update();
         MoveCharacter();
         AttackFunc();
-        GotHit(); // todo : need to implement gothit and gotkilled ASAP
+        GotHit(); 
         GotKilled();
 
     }

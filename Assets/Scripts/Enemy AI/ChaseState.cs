@@ -56,12 +56,12 @@ namespace EnemyAI
             Chase();
             if (PlayerInAttackRange())
             {
-                enemy.animator.SetBool(enemy.walkingAnimationBool, false);
+                enemy.anim.SetBool(enemy.walkingAnimationBool, false);
                 ToAttackState();
             }
             if (!PlayerInPursuitRange())
             {
-                enemy.animator.SetBool(enemy.walkingAnimationBool, false);
+                enemy.anim.SetBool(enemy.walkingAnimationBool, false);
                 ToLookOutState();
             }
         }
@@ -80,7 +80,7 @@ namespace EnemyAI
             FlipIfPossible();
             if (enemy.GetAnimationState() != EnemyStateHandler.MyAnimationState.Walk)
             {
-                enemy.animator.SetBool(enemy.walkingAnimationBool, true);
+                enemy.anim.SetBool(enemy.walkingAnimationBool, true);
             }
             //enemy.animator.SetBool(enemy.walkingAnimationBool, true);
             movementHandler.MoveAlongPath();

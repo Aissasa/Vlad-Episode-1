@@ -78,6 +78,7 @@ namespace EnemyAI
             }
         }
 
+        // todo : random next patrol point
         protected void Patrol()
         {
             if (movementHandler.PathEmpty())
@@ -89,14 +90,14 @@ namespace EnemyAI
             }
 
             FlipIfPossible();
-            enemy.animator.SetBool(enemy.walkingAnimationBool, true);
+            enemy.anim.SetBool(enemy.walkingAnimationBool, true);
             movementHandler.MoveAlongPath();
             if (DirectionAndDistanceCalculator.CalculateDistance(enemy.transform.Get2DPosition(), enemy.patrolWaypoints[nextWaypointIndex].Get2DPosition()) < GameManager.Instance.aiReachingPrecision)
             {
                 nextWaypointIndex = (nextWaypointIndex + 1) % enemy.patrolWaypoints.Length;
                 PathRequestManager.RequestPath(enemy.transform.position, enemy.patrolWaypoints[nextWaypointIndex].Get2DPosition(), enemy.gameObject, enemy.unwalkableLayer, OnPathFound);
                 patrolWaitTimer = enemy.patrolDelay;
-                enemy.animator.SetBool(enemy.walkingAnimationBool, false);
+                enemy.anim.SetBool(enemy.walkingAnimationBool, false);
             }
         }
 

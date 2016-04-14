@@ -59,14 +59,26 @@ namespace EnemyAI
         {
             if (attackTimer <= 0)
             {
-                Debug.Log("THIS IS SPARTAAAAA !!!!");
-                enemy.animator.SetTrigger(enemy.attackingAnimationTrigger);
+                enemy.anim.SetTrigger(enemy.attackingAnimationTrigger);
+                enemy.player.GetComponent<IDamageable>().TakeDamage(enemy.stats);
                 attackTimer = enemy.attackDelay;
-                // urgent add attack logic here for enemies
             }
             else
             {
                 attackTimer -= Time.deltaTime;
+                if (enemy.GetAnimationState() != EnemyStateHandler.MyAnimationState.Attack)
+                {
+                    LookAtPlayer();
+                }
+            }
+        }
+
+        protected void LookAtPlayer()
+        {
+            if (enemy.transform.Get2DPosition().IsAtLeftOf(enemy.player.Get2DPosition()) && !enemy.isFacingRight ||
+                !enemy.transform.Get2DPosition().IsAtLeftOf(enemy.player.Get2DPosition()) && enemy.isFacingRight)
+            {
+                enemy.Flip();
             }
         }
 

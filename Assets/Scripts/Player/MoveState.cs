@@ -20,11 +20,13 @@ namespace PlayerLogic
 
         public void ToAttackState()
         {
+            player.anim.SetBool(player.walkingAnimationBool, false);
             player.currentPlayerState = player.attackState;
         }
 
         public void ToIdleState()
         {
+            player.anim.SetBool(player.walkingAnimationBool, false);
             player.currentPlayerState = player.idleState;
         }
 
@@ -45,7 +47,6 @@ namespace PlayerLogic
             }
             if (Vector2.zero == player.movementVector)
             {
-                player.anim.SetBool(player.walkingAnimationBool, false);
                 ToIdleState();
             }
         }

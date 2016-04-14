@@ -1,18 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 namespace EnemyAI
 {
-    public class EnemyStateHandler : MonoBehaviour
+    public class EnemyStateHandler : MonoBehaviour, IDamageable
     {
+        public delegate void DeadEnemyAction(GameObject go);
+        public static event DeadEnemyAction Dead;
+
         public IEnemyState currentEnemyState { protected get; set; }
         public PatrolState patrolState { get; protected set; }
         public ChaseState chaseState { get; protected set; }
         public LookOutState lookOutState { get; protected set; }
         public AttackState attackState { get; protected set; }
 
-        public Animator animator { get; protected set; }
+        public Animator anim { get; protected set; }
 
         // animator's triggers and bools names
         public string attackingAnimationTrigger
@@ -38,6 +42,8 @@ namespace EnemyAI
 
         public bool isFacingRight { get; set; }         // bool to know which direction the character is facing
         public SpriteRenderer spriteRenderer { get; protected set; }
+
+        public BasicStats stats { get; protected set; }
 
         [Header("For Debugging Purposes: ")]
         public bool displayPath;           // display path gizmos or not
@@ -71,29 +77,35 @@ namespace EnemyAI
         [HideInInspector]
         public float pursuitRange;
 
+        protected BasicStats.AttackOutcome outcome;
+        protected bool isDead;
+
         protected void Awake()
         {
             Spawn();
-            animator = GetComponent<Animator>();
+            anim = GetComponent<Animator>();
             spriteRenderer = GetComponent<SpriteRenderer>();
             patrolState = new PatrolState(this);
             chaseState = new ChaseState(this);
             lookOutState = new LookOutState(this);
             attackState = new AttackState(this);
-            // todo : add this : use list
-            //if (patrolWaypoints == null || patrolWaypoints.Length<1)
-            //{
-            //    patrolWaypoints = new Transform[] { spawnPosition };
-            //}
+            if (patrolWaypoints == null || patrolWaypoints.Length < 1)
+            {
+                patrolWaypoints = new Transform[] { spawnPosition };
+                // note : maybe add another point by raycasting (walkable)
+            }
             //else
             //{
-            //    patrolWaypoints = new Transform[] { spawnPosition, patrolWaypoints };
+            //    List<Transform> list = new List<Transform>(patrolWaypoints);
+            //    list.Add(spawnPosition);
+            //    patrolWaypoints = list.ToArray();
             //}
         }
 
         protected void Start()
         {
             currentEnemyState = patrolState;
+            stats = BasicStats.EnemyTest();
             if (spriteRenderer.flipX)
                 isFacingRight = false;
             else
@@ -102,6 +114,7 @@ namespace EnemyAI
             {
                 player = GameObject.FindGameObjectWithTag("Player").transform;
             }
+            isDead = false;
         }
 
         protected void FixedUpdate()
@@ -119,25 +132,44 @@ namespace EnemyAI
 
         public MyAnimationState GetAnimationState()
         {
-            if (animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+            if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
             {
                 return MyAnimationState.Attack;
             }
-            if (animator.GetCurrentAnimatorStateInfo(0).IsName("Walk"))
+            if (anim.GetCurrentAnimatorStateInfo(0).IsName("Walk"))
             {
                 return MyAnimationState.Walk;
             }
-            if (animator.GetCurrentAnimatorStateInfo(0).IsName("Dead"))
+            if (anim.GetCurrentAnimatorStateInfo(0).IsName("Dead"))
             {
                 return MyAnimationState.Dead;
             }
-            if (animator.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
+            if (anim.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
             {
                 return MyAnimationState.Dead;
             }
             else
             {
                 return MyAnimationState.Idle;
+            }
+        }
+
+        public void TakeDamage(BasicStats attackerStats)
+        {
+            if (isDead)
+            {
+                return;
+            }
+            int damage = DamageCalculationManager.Instance.CalculateInflictedDamage(attackerStats, stats, out outcome);
+            UpdateHealth(damage);
+            if (stats.currentHealth <= 0)
+            {
+                isDead = true;
+                Debug.Log(gameObject.name +" is dead !");
+                anim.SetTrigger(dyingAnimationTrigger);
+                enabled = false;
+                Dead(gameObject);
+                // new update rendering manager
             }
         }
 
@@ -151,6 +183,9 @@ namespace EnemyAI
             {
                 currentEnemyState.DrawGizmos();
             }
+
+            Gizmos.DrawSphere(spriteRenderer.bounds.center, 0.02f);
+
         }
 
         protected void Spawn()
@@ -159,6 +194,21 @@ namespace EnemyAI
             {
                 transform.position = spawnPosition.position;
             }
+        }
+
+        protected void UpdateHealth(int damage)
+        {
+            if (damage > stats.currentHealth)
+            {
+                stats.currentHealth = 0;
+            }
+            else
+            {
+                stats.currentHealth  = stats.currentHealth - damage;
+            }
+
+            Debug.Log(outcome + " => Damage inflicted by player = " + damage);
+            Debug.Log("Enemy health : " + stats.currentHealth + "/" + stats.maxHealth);
         }
 
         public enum MyAnimationState
@@ -170,6 +220,6 @@ namespace EnemyAI
             Dead
         }
 
-
+        
     }
 }

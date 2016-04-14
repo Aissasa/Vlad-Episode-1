@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 namespace PlayerLogic
 {
@@ -52,8 +53,34 @@ namespace PlayerLogic
 
         protected void Attack()
         {
-            Debug.Log("YAAAAA!!!");
+            // new add isinbloking animation of player controller
+            if (player.GetAnimationState() == PlayerStateHandler.MyAnimationState.Attack)
+            {
+                return;
+            }
             player.anim.SetTrigger(player.attackingAnimationTrigger);
+            List<GameObject> hitCharacters = GetSurroundingDamageableCharacters(); // new add getbreakableobjects with unwalkable layer and then breakable tag
+            foreach (var character in hitCharacters)
+            {
+                if (character.tag == "Player")
+                {
+                    continue;
+                }
+                character.GetComponent<IDamageable>().TakeDamage(player.stats);
+            }
+        }
+
+        // new :  think about player direction in raycasting
+        protected List<GameObject> GetSurroundingDamageableCharacters()
+        {
+            RaycastHit2D[] array = Physics2D.CircleCastAll(player.transform.Get2DPosition(), player.playerAttackRange, Vector2.zero, Mathf.Infinity, player.damageableLayer);
+            List<GameObject> gos = new List<GameObject>();
+            foreach (var item in array)
+            {
+                gos.Add(item.transform.gameObject);
+            }
+
+            return gos;
         }
     }
 }

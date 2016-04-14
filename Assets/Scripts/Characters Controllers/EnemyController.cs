@@ -33,7 +33,6 @@ public class EnemyController : GenericCharacterController
     {
         if (pathFound)
         {
-            // todo :  delete this
             //if (path == null || path.Length <= 0)
             //{
             //    path = newPath;
@@ -43,7 +42,6 @@ public class EnemyController : GenericCharacterController
             //    path = AddNewPath(targetIndex, newPath);
             //}
             path = newPath;
-            // todo : delete this
             //if (refineIt)
             //{
             //    RefinePath();
@@ -140,7 +138,6 @@ public class EnemyController : GenericCharacterController
         }
     }
 
-    // todo : delete this
     protected Vector2[] AddNewPath(int index, Vector2[] newPath)
     {
         List<Vector2> oldPath = new List<Vector2>(path);
@@ -156,7 +153,6 @@ public class EnemyController : GenericCharacterController
         return oldPath.ToArray();
     }
 
-    // todo : delete this
     protected void BezierInterpolate()
     {
         bezierPath = new BezierPath();
@@ -166,7 +162,6 @@ public class EnemyController : GenericCharacterController
         path = bezierPath.GetPathPoints().ToArray();
     }
 
-    // todo : delete this
     protected void Chase()
     {
         if (PlayerInAttackRange())
@@ -230,7 +225,6 @@ public class EnemyController : GenericCharacterController
         return DirectionAndDistanceCalculator.CalculateDistance(transform.Get2DPosition(), player.Get2DPosition()) <= pursuitRange;
     }
 
-    // todo : delete this
     protected void RefinePath()
     {
         List<Vector2> refinedPath = new List<Vector2>(path);
@@ -281,7 +275,6 @@ public class EnemyController : GenericCharacterController
         path = refinedPath.ToArray();
     }
 
-    // todo : delete this
     protected void SmoothPath()
     {
         if (path == null)

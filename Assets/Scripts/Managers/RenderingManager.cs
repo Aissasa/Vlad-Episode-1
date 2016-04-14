@@ -1,44 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
-public class RenderingManager : MonoBehaviour
+public class RenderingManager : Singleton<RenderingManager>
 {
-    protected static RenderingManager instance;
-
-    public static RenderingManager Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                instance = new RenderingManager();
-            }
-            return instance;
-        }
-    }
-
-    private RenderingManager() { }
-
     List<GameObject> characters = new List<GameObject>();
-
-    void Awake()
-    {
-        //Check if instance already exists
-        if (instance == null)
-            //if not, set instance to this
-            instance = this;
-        //If instance already exists and it's not this:
-        else if (instance != this)
-            //Then destroy this. This enforces our singleton pattern, meaning there can only ever be one instance of a GameManager.
-            Destroy(gameObject);
-        //Sets this to not be destroyed when reloading scene
-        DontDestroyOnLoad(gameObject);
-    }
 
     void Start()
     {
-
         RetrieveCharacters();
         ArrangeCharactersRenderingOrder();
     }
@@ -56,8 +26,14 @@ public class RenderingManager : MonoBehaviour
         {
             item.GetComponent<Renderer>().sortingOrder = order;
             order--;
-
         }
+    }
+
+    // todo : externalize to game manager
+    void DeadEnemy(GameObject go)
+    {
+        characters.Remove(go);
+        Destroy(go, 5);
     }
 
     void RetrieveCharacters()
@@ -68,4 +44,15 @@ public class RenderingManager : MonoBehaviour
             characters.Add(enemy);
         }
     }
+
+    void OnEnable()
+    {
+        EnemyAI.EnemyStateHandler.Dead += DeadEnemy;
+    }
+
+    void OnDisable()
+    {
+        EnemyAI.EnemyStateHandler.Dead -= DeadEnemy;
+    }
+
 }

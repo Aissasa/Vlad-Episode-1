@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
-public class BasicStats {
-
+[Serializable]
+public class BasicStats
+{
     public int maxHealth { get; set; }
     public int currentHealth { get; set; }
     public int defense { get; set; }
@@ -10,10 +12,11 @@ public class BasicStats {
     public float blockRate { get; set; }
     public int attack { get; set; }
     public float hitRate { get; set; }
+    public float blockBreakRate { get; set; }
     public float critRate { get; set; }
     public float critDamage { get; set; }
 
-    public BasicStats(int _maxHealth, int _currentHealth, int _defense, float _dodgeRate, float _blockRate, int _attack, float _hitRate, float _critRate, float _critDamage)
+    public BasicStats(int _maxHealth, int _currentHealth, int _defense, float _dodgeRate, float _blockRate, int _attack, float _hitRate, float _blockBreakRate, float _critRate, float _critDamage)
     {
         maxHealth = _maxHealth;
         currentHealth = _currentHealth;
@@ -26,7 +29,26 @@ public class BasicStats {
         blockRate = _blockRate;
         attack = _attack;
         hitRate = _hitRate;
+        blockBreakRate = _blockBreakRate;
         critRate = _critRate;
         critDamage = _critDamage;
+    }
+
+    public static BasicStats PlayerTest()
+    {
+        return new BasicStats(1000, 1000, 50, 25, 40, 100, 120, 110, 50, 50);
+    }
+
+    public static BasicStats EnemyTest()
+    {
+        return new BasicStats(500, 500, 10, 2, 3, 60, 100, 100, 10, 10);
+    }
+
+    public enum AttackOutcome
+    {
+        Blocked,
+        Crit,
+        Hit,
+        Miss
     }
 }
