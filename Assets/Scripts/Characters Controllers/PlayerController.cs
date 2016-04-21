@@ -72,7 +72,7 @@ public class PlayerController : GenericCharacterController
 
     protected override void Move()
     {
-        LinearMouvement.Instance.MoveTowardsDirection(gameObject, movementVector, characterSpeed);
+        LinearMouvement.Instance.MoveTowardsWithKeys(gameObject, movementVector, characterSpeed);
     }
 
     protected void CheckIfHasMoved()

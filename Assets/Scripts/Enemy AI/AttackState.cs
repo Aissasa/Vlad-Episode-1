@@ -66,7 +66,7 @@ namespace EnemyAI
             else
             {
                 attackTimer -= Time.deltaTime;
-                if (enemy.GetAnimationState() != EnemyStateHandler.MyAnimationState.Attack)
+                if (!enemy.InBlockingAnimation())
                 {
                     LookAtPlayer();
                 }

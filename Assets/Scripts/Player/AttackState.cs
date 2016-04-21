@@ -53,26 +53,26 @@ namespace PlayerLogic
 
         protected void Attack()
         {
-            // new add isinbloking animation of player controller
-            if (player.GetAnimationState() == PlayerStateHandler.MyAnimationState.Attack)
+            if (!player.isAttacking || player.InBlockingAnimation())
             {
                 return;
             }
             player.anim.SetTrigger(player.attackingAnimationTrigger);
             List<GameObject> hitCharacters = GetSurroundingDamageableCharacters(); // new add getbreakableobjects with unwalkable layer and then breakable tag
+            hitCharacters.Remove(player.gameObject);
+            Debug.Log(hitCharacters.Count);
             foreach (var character in hitCharacters)
             {
-                if (character.tag == "Player")
-                {
-                    continue;
-                }
                 character.GetComponent<IDamageable>().TakeDamage(player.stats);
             }
-        }
 
-        // new :  think about player direction in raycasting
+            // todo : lookat nearest enemy
+        }
+        // urgent : think of facing nearest enemy when attacking
         protected List<GameObject> GetSurroundingDamageableCharacters()
         {
+            //ps : test
+            //RaycastHit2D[] array = Physics2D.CircleCastAll(player.transform.Get2DPosition(), 0.2f, player.movementVector, Mathf.Infinity, player.damageableLayer);
             RaycastHit2D[] array = Physics2D.CircleCastAll(player.transform.Get2DPosition(), player.playerAttackRange, Vector2.zero, Mathf.Infinity, player.damageableLayer);
             List<GameObject> gos = new List<GameObject>();
             foreach (var item in array)
@@ -82,6 +82,13 @@ namespace PlayerLogic
 
             return gos;
         }
+
+        // new :  think about player direction in raycasting
+        protected bool IsFacingEnemy(Transform enemy)
+        {
+            return true;
+        }
+
     }
 }
 

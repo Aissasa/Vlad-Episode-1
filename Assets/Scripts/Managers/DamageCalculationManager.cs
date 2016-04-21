@@ -50,7 +50,9 @@ public class DamageCalculationManager : Singleton<DamageCalculationManager> {
 
     protected int DamageCalc(int attack, int defense)
     {
-        int dmg = attack - defense;
+        int roll = UnityEngine.Random.Range(8, 12);
+        int dmg = (attack / defense) * roll;
+        //int dmg = attack - defense;
         if (dmg <= 0)
         {
             dmg = 1;

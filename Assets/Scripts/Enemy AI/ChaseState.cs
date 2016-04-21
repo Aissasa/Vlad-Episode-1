@@ -77,7 +77,7 @@ namespace EnemyAI
             {
                 pathRefreshTimer -= Time.deltaTime;
             }
-            FlipIfPossible();
+            FlipIfNeeded();
             if (enemy.GetAnimationState() != EnemyStateHandler.MyAnimationState.Walk)
             {
                 enemy.anim.SetBool(enemy.walkingAnimationBool, true);
@@ -86,7 +86,7 @@ namespace EnemyAI
             movementHandler.MoveAlongPath();
         }
 
-        protected void FlipIfPossible()
+        protected void FlipIfNeeded()
         {
             Vector2 direction = movementHandler.GetMovementDirection();
             if ((direction.x > 0 && !enemy.isFacingRight) || (direction.x < 0 && enemy.isFacingRight))

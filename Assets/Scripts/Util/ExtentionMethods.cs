@@ -2,7 +2,8 @@
 using System.Collections;
 using System;
 
-public static class ExtentionMethods {
+public static class ExtentionMethods
+{
 
     public static Vector2 Get2DPosition(this Transform trans)
     {
@@ -29,4 +30,27 @@ public static class ExtentionMethods {
         return boxColliderCenter - new Vector2(0, yGap);
     }
 
+    //******Orthographic Camera Only******//
+
+    public static Vector2 BoundsMin(this Camera camera)
+    {
+        return camera.transform.Get2DPosition() - camera.Extents();
+    }
+
+    public static Vector2 BoundsMax(this Camera camera)
+    {
+        return camera.transform.Get2DPosition() + camera.Extents();
+    }
+
+    public static Vector2 Extents(this Camera camera)
+    {
+        if (camera.orthographic)
+            return new Vector2(camera.orthographicSize * Screen.width / Screen.height, camera.orthographicSize);
+        else
+        {
+            Debug.LogError("Camera is not orthographic!", camera);
+            return new Vector2();
+        }
+    }
+    //*****End of Orthographic Only*****//
 }

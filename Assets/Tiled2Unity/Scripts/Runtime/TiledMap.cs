@@ -30,6 +30,19 @@ namespace Tiled2Unity
             return this.MapHeightInPixels * this.transform.lossyScale.y * this.ExportScale;
         }
 
+        //abenz
+        public Vector2 GetMapTopLeftPos()
+        {
+            Vector2 pos_w = this.gameObject.transform.position;
+            return Vector2.zero + pos_w;
+        }
+
+        //abenz
+        public Vector2 GetMapBottomRightPos()
+        {
+            Vector2 pos_w = this.gameObject.transform.position;
+            return new Vector2(GetMapWidthInPixelsScaled(), -GetMapHeightInPixelsScaled()) + pos_w;
+        }
 
         private void OnDrawGizmosSelected()
         {

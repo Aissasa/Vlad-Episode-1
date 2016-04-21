@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using UnityStandardAssets.CrossPlatformInput;
 
 namespace PlayerLogic
 {
     public class PlayerStateHandler : MonoBehaviour, IDamageable, ICombatEffect
     {
-        // urgent : add look at to player and enemy when hit
+        public delegate void DeadPlayerAction(GameObject go);
+        public static event DeadPlayerAction DeadPlayer;
+
+        // urgent : add lookat to player and enemy when hit
         public IPlayerState currentPlayerState { get; set; }
         public AttackState attackState { get; protected set; }
         public IdleState idleState { get; protected set; }
@@ -35,7 +39,7 @@ namespace PlayerLogic
         public SpriteRenderer spriteRenderer { get; protected set; }
         public bool isFacingRight { get; set; }
 
-        public Vector2 movementVector { get; protected set; }
+        public Vector2 movementVector { get;  set; }
         public bool isAttacking { get; set; }
 
         public BasicStats stats { get; protected set; }
@@ -48,6 +52,8 @@ namespace PlayerLogic
         // todo : may change depending on the weapon rather than here
         [Range(0.1f, 10f)]
         public float playerAttackRange;
+
+        // todo : add attack cooldown
 
         protected BasicStats.AttackOutcome outcome;
         protected bool isDead;
@@ -80,23 +86,9 @@ namespace PlayerLogic
         {
             UpdateMovementVector();
             DetectAttack();
-            currentPlayerState.UpdateState();
-        }
-
-        public bool CanMove()
-        {
-            MyAnimationState animState = GetAnimationState();
-
-            switch (animState)
+            if (!InBlockingAnimation())
             {
-                case MyAnimationState.Attack:
-                    return false;
-                case MyAnimationState.Dead:
-                    return false;
-                case MyAnimationState.Hit:
-                    return false;
-                default:
-                    return true;
+                currentPlayerState.UpdateState();
             }
         }
 
@@ -130,6 +122,23 @@ namespace PlayerLogic
             }
         }
 
+        public bool InBlockingAnimation()
+        {
+            MyAnimationState animState = GetAnimationState();
+
+            switch (animState)
+            {
+                case MyAnimationState.Attack:
+                    return true;
+                case MyAnimationState.Dead:
+                    return true;
+                case MyAnimationState.Hit:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         public void TakeDamage(BasicStats attackerStats)
         {
             if (isDead)
@@ -144,19 +153,18 @@ namespace PlayerLogic
                 Debug.Log("Player is dead !");
                 anim.SetTrigger(dyingAnimationTrigger);
                 enabled = false;
+                DeadPlayer(gameObject);
             }
         }
 
         protected void DetectAttack()
         {
-            // new implement attacking logic here, maybe launch an event , make a raycast and detect the enemies hit, 
-            // and the sub is a damage handler, that makes calculations
-            if (Input.GetButton("Attack"))
+            if (CrossPlatformInputManager.GetButton("Attack"))
             {
                 isAttacking = true;
             }
 
-            if (Input.GetButtonUp("Attack"))
+            if (CrossPlatformInputManager.GetButtonUp("Attack"))
             {
                 isAttacking = false;
             }
@@ -186,12 +194,15 @@ namespace PlayerLogic
 
         protected void UpdateMovementVector()
         {
-            movementVector = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            movementVector = new Vector2(CrossPlatformInputManager.GetAxisRaw("Horizontal"), CrossPlatformInputManager.GetAxisRaw("Vertical"));
+            // todo : make movement vect coordinates >0.5
+            //anim.SetFloat("x", movementVector.x);
+            //anim.SetFloat("y", movementVector.y);
         }
 
         public void ShowCombatEffects()
         {
-            // todo : attack outcome
+            // todo : attack outcome floating texts
             Debug.Log(outcome);
         }
 

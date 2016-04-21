@@ -8,7 +8,7 @@ namespace EnemyAI
     public class EnemyStateHandler : MonoBehaviour, IDamageable
     {
         public delegate void DeadEnemyAction(GameObject go);
-        public static event DeadEnemyAction Dead;
+        public static event DeadEnemyAction DeadEnemy;
 
         public IEnemyState currentEnemyState { protected get; set; }
         public PatrolState patrolState { get; protected set; }
@@ -119,9 +119,10 @@ namespace EnemyAI
 
         protected void FixedUpdate()
         {
-            currentEnemyState.UpdateState();
-            // new add hit here since it can happen anytime,
-            // new add killed/died state for enemy, or actually add it here, by controlling health here
+            if (!InBlockingAnimation())
+            {
+                currentEnemyState.UpdateState();
+            }
         }
 
         public void Flip()
@@ -154,6 +155,23 @@ namespace EnemyAI
             }
         }
 
+        public bool InBlockingAnimation()
+        {
+            MyAnimationState animState = GetAnimationState();
+
+            switch (animState)
+            {
+                case MyAnimationState.Attack:
+                    return true;
+                case MyAnimationState.Dead:
+                    return true;
+                case MyAnimationState.Hit:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         public void TakeDamage(BasicStats attackerStats)
         {
             if (isDead)
@@ -168,8 +186,18 @@ namespace EnemyAI
                 Debug.Log(gameObject.name +" is dead !");
                 anim.SetTrigger(dyingAnimationTrigger);
                 enabled = false;
-                Dead(gameObject);
-                // new update rendering manager
+                DeadEnemy(gameObject);
+            }
+            else
+            {
+                if (!InBlockingAnimation() && (outcome == BasicStats.AttackOutcome.Crit || outcome == BasicStats.AttackOutcome.Hit))
+                {
+                    anim.SetTrigger(hitAnimationTrigger);
+                }
+                else
+                {
+                    anim.ResetTrigger(hitAnimationTrigger);
+                }
             }
         }
 
@@ -219,7 +247,6 @@ namespace EnemyAI
             Hit,
             Dead
         }
-
-        
+          
     }
 }

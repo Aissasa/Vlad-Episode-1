@@ -23,10 +23,9 @@ public class LinearMouvement : IMouvement
         }
     }
 
-    public void MoveTowardsDirection(GameObject go, Vector2 movementVector, float speed)
+    public void MoveTowardsWithKeys(GameObject go, Vector2 movementVector, float speed)
     {
         Rigidbody2D rb2d = go.GetComponent<Rigidbody2D>();
-
         if (movementVector.x * movementVector.y == 0)
         {
             rb2d.MovePosition(rb2d.position + movementVector * Time.deltaTime * speed);
@@ -37,6 +36,12 @@ public class LinearMouvement : IMouvement
             float diagonalSpeed = speed / Mathf.Sqrt(2);
             rb2d.MovePosition(rb2d.position + movementVector * Time.deltaTime * diagonalSpeed);
         }
+    }
+
+    public void MoveTowardsWithJoyStick(GameObject go, Vector2 movementVector, float speed)
+    {
+        Rigidbody2D rb2d = go.GetComponent<Rigidbody2D>();
+        rb2d.MovePosition(rb2d.position + movementVector * Time.deltaTime * speed);
     }
 
     public void MoveToPosition(GameObject go, Vector2 targetPos, float speed)

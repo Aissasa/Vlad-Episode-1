@@ -61,7 +61,7 @@ namespace EnemyAI
             }
         }
 
-        protected void FlipIfPossible()
+        protected void FlipIfNeeded()
         {
             Vector2 direction = movementHandler.GetMovementDirection();
             if ((direction.x > 0 && !enemy.isFacingRight) || (direction.x < 0 && enemy.isFacingRight))
@@ -89,7 +89,7 @@ namespace EnemyAI
                 return;
             }
 
-            FlipIfPossible();
+            FlipIfNeeded();
             enemy.anim.SetBool(enemy.walkingAnimationBool, true);
             movementHandler.MoveAlongPath();
             if (DirectionAndDistanceCalculator.CalculateDistance(enemy.transform.Get2DPosition(), enemy.patrolWaypoints[nextWaypointIndex].Get2DPosition()) < GameManager.Instance.aiReachingPrecision)

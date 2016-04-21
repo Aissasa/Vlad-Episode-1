@@ -29,11 +29,9 @@ public class RenderingManager : Singleton<RenderingManager>
         }
     }
 
-    // todo : externalize to game manager
     void DeadEnemy(GameObject go)
     {
         characters.Remove(go);
-        Destroy(go, 5);
     }
 
     void RetrieveCharacters()
@@ -47,12 +45,12 @@ public class RenderingManager : Singleton<RenderingManager>
 
     void OnEnable()
     {
-        EnemyAI.EnemyStateHandler.Dead += DeadEnemy;
+        EnemyAI.EnemyStateHandler.DeadEnemy += DeadEnemy;
     }
 
     void OnDisable()
     {
-        EnemyAI.EnemyStateHandler.Dead -= DeadEnemy;
+        EnemyAI.EnemyStateHandler.DeadEnemy -= DeadEnemy;
     }
 
 }

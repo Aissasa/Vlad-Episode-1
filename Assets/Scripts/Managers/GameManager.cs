@@ -14,4 +14,27 @@ public class GameManager : Singleton<GameManager>
     [HideInInspector] // todo : maybe it should be added to the enemy rather than global
     public float aiReachingPrecision; //the precision of reaching a point by the AI when walking
 
+    void DeadEnemy(GameObject go)
+    {
+        Destroy(go, 5);
+    }
+
+    void DeadPlayer(GameObject go)
+    {
+        // todo : add player death logic here
+    }
+
+    void OnEnable()
+    {
+        PlayerLogic.PlayerStateHandler.DeadPlayer += DeadPlayer;
+        EnemyAI.EnemyStateHandler.DeadEnemy += DeadEnemy;
+    }
+
+    void OnDisable()
+    {
+        PlayerLogic.PlayerStateHandler.DeadPlayer -= DeadPlayer;
+        EnemyAI.EnemyStateHandler.DeadEnemy -= DeadEnemy;
+    }
+
+
 }

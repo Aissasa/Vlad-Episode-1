@@ -6,7 +6,6 @@ namespace PlayerLogic
 {
     public class MoveState : IPlayerState
     {
-
         protected readonly PlayerStateHandler player;
 
         public MoveState(PlayerStateHandler playerState)
@@ -37,10 +36,7 @@ namespace PlayerLogic
 
         public void UpdateState()
         {
-            if (player.CanMove())
-            {
-                MovePlayer();
-            }
+            MovePlayer();
             if (player.isAttacking)
             {
                 ToAttackState();
@@ -51,7 +47,7 @@ namespace PlayerLogic
             }
         }
 
-        protected void FlipIfPossible()
+        protected void FlipIfNeeded()
         {
             if ((player.movementVector.x > 0 && !player.isFacingRight) || (player.movementVector.x < 0 && player.isFacingRight))
             {
@@ -62,9 +58,10 @@ namespace PlayerLogic
 
         protected void MovePlayer()
         {
-            FlipIfPossible();
+            FlipIfNeeded();
             player.anim.SetBool(player.walkingAnimationBool, true);
-            LinearMouvement.Instance.MoveTowardsDirection(player.gameObject, player.movementVector, player.playerSpeed);
+            //ps : change this to keys if needed
+            LinearMouvement.Instance.MoveTowardsWithJoyStick(player.gameObject, player.movementVector, player.playerSpeed);
         }
     }
 }
