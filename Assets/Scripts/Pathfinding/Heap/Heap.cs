@@ -15,14 +15,14 @@ public class Heap<T> where T : IHeapItem<T>
 
     public bool Contains(T item)
     {
-        return Equals(items[item.heapIndex], item);
+        return Equals(items[item.HeapIndex], item);
     }
 
     public int Count { get { return currentItemCount; } }
 
     public void Add(T item)
     {
-        item.heapIndex = currentItemCount;
+        item.HeapIndex = currentItemCount;
         items[currentItemCount] = item;
         SortUp(item);
         currentItemCount++;
@@ -33,7 +33,7 @@ public class Heap<T> where T : IHeapItem<T>
         T firstItem = items[0];
         currentItemCount--;
         items[0] = items[currentItemCount];
-        items[0].heapIndex = 0;
+        items[0].HeapIndex = 0;
         SortDown(items[0]);
         return firstItem;
     }
@@ -47,8 +47,8 @@ public class Heap<T> where T : IHeapItem<T>
     {
         while (true)
         {
-            int rightChildIndex = item.heapIndex * 2 + 1;
-            int leftChildIndex = item.heapIndex * 2 + 2;
+            int rightChildIndex = item.HeapIndex * 2 + 1;
+            int leftChildIndex = item.HeapIndex * 2 + 2;
             int swapIndex = 0;
 
             if (leftChildIndex < currentItemCount)
@@ -80,7 +80,7 @@ public class Heap<T> where T : IHeapItem<T>
 
     void SortUp(T item)
     {
-        int parentIndex = (item.heapIndex - 1) / 2;
+        int parentIndex = (item.HeapIndex - 1) / 2;
 
         while (true)
         {
@@ -93,18 +93,18 @@ public class Heap<T> where T : IHeapItem<T>
             {
                 break;
             }
-            parentIndex = (item.heapIndex - 1) / 2;
+            parentIndex = (item.HeapIndex - 1) / 2;
         }
     }
 
     void Swap(T itemA, T itemB)
     {
-        items[itemA.heapIndex] = itemB;
-        items[itemB.heapIndex] = itemA;
+        items[itemA.HeapIndex] = itemB;
+        items[itemB.HeapIndex] = itemA;
 
-        int temp = itemA.heapIndex;
-        itemA.heapIndex = itemB.heapIndex;
-        itemB.heapIndex = temp;
+        int temp = itemA.HeapIndex;
+        itemA.HeapIndex = itemB.HeapIndex;
+        itemB.HeapIndex = temp;
 
     }
 

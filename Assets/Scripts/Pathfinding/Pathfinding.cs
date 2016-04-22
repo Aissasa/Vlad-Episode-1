@@ -35,7 +35,7 @@ public class Pathfinding : MonoBehaviour
 
     Vector2 CalculateDirection(Node startNode, Node targetNode)
     {
-        return new Vector2(startNode.gridX - targetNode.gridX, startNode.gridY - targetNode.gridY);
+        return new Vector2(startNode.GridX - targetNode.GridX, startNode.GridY - targetNode.GridY);
     }
 
 
@@ -47,7 +47,7 @@ public class Pathfinding : MonoBehaviour
         Node startNode = grid.NodeFromWorldPoint(startPos);
         Node targetNode = grid.NodeFromWorldPoint(targetPos);
 
-        if (startNode.walkable && targetNode.walkable)
+        if (startNode.Walkable && targetNode.Walkable)
         {
 
             Heap<Node> openSet = new Heap<Node>(grid.MaxSize);
@@ -66,17 +66,17 @@ public class Pathfinding : MonoBehaviour
 
                 foreach (var neighbor in grid.GetNeighbors(currentNode))
                 {
-                    if (!neighbor.walkable || closedSet.Contains(neighbor))
+                    if (!neighbor.Walkable || closedSet.Contains(neighbor))
                     {
                         continue;
                     }
 
-                    int newMouvementCostToNeighbor = currentNode.gCost + GetDistance(currentNode, neighbor);
-                    if (newMouvementCostToNeighbor < neighbor.gCost || !openSet.Contains(neighbor))
+                    int newMouvementCostToNeighbor = currentNode.GCost + GetDistance(currentNode, neighbor);
+                    if (newMouvementCostToNeighbor < neighbor.GCost || !openSet.Contains(neighbor))
                     {
-                        neighbor.gCost = newMouvementCostToNeighbor;
-                        neighbor.hCost = GetDistance(neighbor, targetNode);
-                        neighbor.parent = currentNode;
+                        neighbor.GCost = newMouvementCostToNeighbor;
+                        neighbor.HCost = GetDistance(neighbor, targetNode);
+                        neighbor.Parent = currentNode;
 
                         if (!openSet.Contains(neighbor))
                         {
@@ -104,8 +104,8 @@ public class Pathfinding : MonoBehaviour
 
     int GetDistance(Node node1, Node node2)
     {
-        int distX = Mathf.Abs(node1.gridX - node2.gridX);
-        int distY = Mathf.Abs(node1.gridY - node2.gridY);
+        int distX = Mathf.Abs(node1.GridX - node2.GridX);
+        int distY = Mathf.Abs(node1.GridY - node2.GridY);
 
         if (distX > distY)
         {
@@ -123,7 +123,7 @@ public class Pathfinding : MonoBehaviour
         while (currentNode != startNode)
         {
             shortestPath.Add(currentNode);
-            currentNode = currentNode.parent;
+            currentNode = currentNode.Parent;
         }
         return ReverseAndConvert(shortestPath);
     }
@@ -134,7 +134,7 @@ public class Pathfinding : MonoBehaviour
 
         foreach (var node in path)
         {
-            wayPoints.Add(node.worldPosition);
+            wayPoints.Add(node.WorldPosition);
         }
 
         wayPoints.Reverse();

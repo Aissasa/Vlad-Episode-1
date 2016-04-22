@@ -3,7 +3,9 @@ using System.Collections;
 
 public class Warper : MonoBehaviour {
 
-    public Transform targetPoint;
+    [SerializeField]
+    private Transform targetPoint;
+
     string screenFaderTag = "ScreenFader";
 
     //void Start()

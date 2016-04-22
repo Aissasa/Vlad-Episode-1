@@ -22,7 +22,7 @@ namespace EnemyAI
 
         public void ResetVariables()
         {
-            lookOutTimer = enemy.lookOutDelay;
+            lookOutTimer = enemy.LookOutDelay;
         }
 
         public void ToAttackState()
@@ -33,7 +33,7 @@ namespace EnemyAI
         public void ToChaseState()
         {
             ResetVariables();
-            enemy.currentEnemyState = enemy.chaseState;
+            enemy.CurrentEnemyState = enemy.ChaseState;
         }
 
         public void ToLookOutState()
@@ -44,7 +44,7 @@ namespace EnemyAI
         public void ToPatrolState()
         {
             ResetVariables();
-            enemy.currentEnemyState = enemy.patrolState;
+            enemy.CurrentEnemyState = enemy.PatrolState;
         }
 
         public void UpdateState()
@@ -62,7 +62,7 @@ namespace EnemyAI
 
         protected bool PlayerInChasingRange()
         {
-            return DirectionAndDistanceCalculator.CalculateDistance(enemy.transform.Get2DPosition(), enemy.player.Get2DPosition()) <= enemy.chasingRange;
+            return DirectionAndDistanceCalculator.CalculateDistance(enemy.transform.Get2DPosition(), enemy.Player.Get2DPosition()) <= enemy.chasingRange;
         }
 
     }

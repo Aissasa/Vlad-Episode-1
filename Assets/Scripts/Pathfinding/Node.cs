@@ -6,35 +6,35 @@ using System.Collections.Generic;
 public class Node : IHeapItem<Node>
 {
 
-    public Vector2 worldPosition { get; set; }
-    public bool walkable { get; set; }
-    public int gridX { get; set; }
-    public int gridY { get; set; }
+    public Vector2 WorldPosition { get; set; }
+    public bool Walkable { get; set; }
+    public int GridX { get; set; }
+    public int GridY { get; set; }
 
-    public int gCost { get; set; } // distance from starting node
-    public int hCost { get; set; } // disrance from target node (heuristic)
-    public int fCost { get { return gCost + hCost; } }
+    public int GCost { get; set; } // distance from starting node
+    public int HCost { get; set; } // disrance from target node (heuristic)
+    public int FCost { get { return GCost + HCost; } }
 
-    public Node parent { get; set; }
-    public List<Node> illegalNodes { get; set; } 
+    public Node Parent { get; set; }
+    public List<Node> IllegalNodes { get; set; } 
 
     public Node(Vector2 _worldPosition, bool _walkable = false, int _gridX = 0, int _gridY = 0, List<Node> _illegalNodes = null)
     {
-        worldPosition = _worldPosition;
-        walkable = _walkable;
-        gridX = _gridX;
-        gridY = _gridY;
-        illegalNodes = _illegalNodes;
+        WorldPosition = _worldPosition;
+        Walkable = _walkable;
+        GridX = _gridX;
+        GridY = _gridY;
+        IllegalNodes = _illegalNodes;
     }
 
-    public int heapIndex { get; set; }
+    public int HeapIndex { get; set; }
 
     public int CompareTo(Node node)
     {
-        int compare = fCost.CompareTo(node.fCost);
+        int compare = FCost.CompareTo(node.FCost);
         if (compare == 0)
         {
-            compare = hCost.CompareTo(node.hCost);
+            compare = HCost.CompareTo(node.HCost);
         }
 
         return -compare;

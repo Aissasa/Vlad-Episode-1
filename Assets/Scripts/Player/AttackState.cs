@@ -26,21 +26,21 @@ namespace PlayerLogic
 
         public void ToIdleState()
         {
-            player.currentPlayerState = player.idleState;
+            player.CurrentPlayerState = player.IdleState;
         }
 
         public void ToMoveState()
         {
-            player.currentPlayerState = player.idleState;
+            player.CurrentPlayerState = player.IdleState;
         }
 
         public void UpdateState()
         {
             Attack();
-            if (!player.isAttacking)
+            if (!player.IsAttacking)
             {
-                player.anim.ResetTrigger(player.attackingAnimationTrigger);
-                if (Vector2.zero == player.movementVector)
+                player.Anim.ResetTrigger(player.AttackingAnimationTrigger);
+                if (Vector2.zero == player.MovementVector)
                 {
                     ToIdleState();
                 }
@@ -53,17 +53,17 @@ namespace PlayerLogic
 
         protected void Attack()
         {
-            if (!player.isAttacking || player.InBlockingAnimation())
+            if (!player.IsAttacking || player.InBlockingAnimation())
             {
                 return;
             }
-            player.anim.SetTrigger(player.attackingAnimationTrigger);
+            player.Anim.SetTrigger(player.AttackingAnimationTrigger);
             List<GameObject> hitCharacters = GetSurroundingDamageableCharacters(); // new add getbreakableobjects with unwalkable layer and then breakable tag
             hitCharacters.Remove(player.gameObject);
             Debug.Log(hitCharacters.Count);
             foreach (var character in hitCharacters)
             {
-                character.GetComponent<IDamageable>().TakeDamage(player.stats);
+                character.GetComponent<IDamageable>().TakeDamage(player.PlayerStats);
             }
 
             // todo : lookat nearest enemy
@@ -73,7 +73,7 @@ namespace PlayerLogic
         {
             //ps : test
             //RaycastHit2D[] array = Physics2D.CircleCastAll(player.transform.Get2DPosition(), 0.2f, player.movementVector, Mathf.Infinity, player.damageableLayer);
-            RaycastHit2D[] array = Physics2D.CircleCastAll(player.transform.Get2DPosition(), player.playerAttackRange, Vector2.zero, Mathf.Infinity, player.damageableLayer);
+            RaycastHit2D[] array = Physics2D.CircleCastAll(player.transform.Get2DPosition(), player.PlayerAttackRange, Vector2.zero, Mathf.Infinity, player.DamageableLayer);
             List<GameObject> gos = new List<GameObject>();
             foreach (var item in array)
             {

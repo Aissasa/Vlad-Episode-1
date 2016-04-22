@@ -8,14 +8,18 @@ public class CameraController : MonoBehaviour
     public GameObject currentMap; // todo: search with tag better, and add event to change it in warp
 
     [Range(1, 10)]
-    public float camScale;
+    [SerializeField]
+    private float camScale;
     [Range(0.05f, 1)]
-    public float camLerpSpeed;
+    [SerializeField]
+    private float camLerpSpeed;
 
     [Range(0, 2)]
-    public float horizontalCamBuffer;
+    [SerializeField]
+    private float horizontalCamBuffer;
     [Range(0, 2)]
-    public float verticalCamBuffer;
+    [SerializeField]
+    private float verticalCamBuffer;
 
 
     Transform player;

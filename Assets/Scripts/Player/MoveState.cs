@@ -19,14 +19,14 @@ namespace PlayerLogic
 
         public void ToAttackState()
         {
-            player.anim.SetBool(player.walkingAnimationBool, false);
-            player.currentPlayerState = player.attackState;
+            player.Anim.SetBool(player.WalkingAnimationBool, false);
+            player.CurrentPlayerState = player.AttackState;
         }
 
         public void ToIdleState()
         {
-            player.anim.SetBool(player.walkingAnimationBool, false);
-            player.currentPlayerState = player.idleState;
+            player.Anim.SetBool(player.WalkingAnimationBool, false);
+            player.CurrentPlayerState = player.IdleState;
         }
 
         public void ToMoveState()
@@ -37,11 +37,11 @@ namespace PlayerLogic
         public void UpdateState()
         {
             MovePlayer();
-            if (player.isAttacking)
+            if (player.IsAttacking)
             {
                 ToAttackState();
             }
-            if (Vector2.zero == player.movementVector)
+            if (Vector2.zero == player.MovementVector)
             {
                 ToIdleState();
             }
@@ -49,7 +49,7 @@ namespace PlayerLogic
 
         protected void FlipIfNeeded()
         {
-            if ((player.movementVector.x > 0 && !player.isFacingRight) || (player.movementVector.x < 0 && player.isFacingRight))
+            if ((player.MovementVector.x > 0 && !player.IsFacingRight) || (player.MovementVector.x < 0 && player.IsFacingRight))
             {
                 player.Flip();
             }
@@ -59,9 +59,9 @@ namespace PlayerLogic
         protected void MovePlayer()
         {
             FlipIfNeeded();
-            player.anim.SetBool(player.walkingAnimationBool, true);
+            player.Anim.SetBool(player.WalkingAnimationBool, true);
             //ps : change this to keys if needed
-            LinearMouvement.Instance.MoveTowardsWithJoyStick(player.gameObject, player.movementVector, player.playerSpeed);
+            LinearMouvement.Instance.MoveTowardsWithJoyStick(player.gameObject, player.MovementVector, player.PlayerSpeed);
         }
     }
 }

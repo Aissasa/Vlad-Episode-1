@@ -20,7 +20,7 @@ namespace PlayerLogic
 
         public void ToAttackState()
         {
-            player.currentPlayerState = player.attackState;
+            player.CurrentPlayerState = player.AttackState;
         }
 
         public void ToIdleState()
@@ -30,16 +30,16 @@ namespace PlayerLogic
 
         public void ToMoveState()
         {
-            player.currentPlayerState = player.moveState;
+            player.CurrentPlayerState = player.MoveState;
         }
 
         public void UpdateState()
         {
-            if (Vector2.zero != player.movementVector)
+            if (Vector2.zero != player.MovementVector)
             {
                 ToMoveState();
             }
-            if (player.isAttacking)
+            if (player.IsAttacking)
             {
                 ToAttackState();
             }

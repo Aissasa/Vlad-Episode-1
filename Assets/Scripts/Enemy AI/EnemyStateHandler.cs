@@ -10,65 +10,91 @@ namespace EnemyAI
         public delegate void DeadEnemyAction(GameObject go);
         public static event DeadEnemyAction DeadEnemy;
 
-        public IEnemyState currentEnemyState { protected get; set; }
-        public PatrolState patrolState { get; protected set; }
-        public ChaseState chaseState { get; protected set; }
-        public LookOutState lookOutState { get; protected set; }
-        public AttackState attackState { get; protected set; }
+        public IEnemyState CurrentEnemyState { protected get; set; }
+        public PatrolState PatrolState { get; protected set; }
+        public ChaseState ChaseState { get; protected set; }
+        public LookOutState LookOutState { get; protected set; }
+        public AttackState AttackState { get; protected set; }
 
-        public Animator anim { get; protected set; }
+        public Animator Anim { get; protected set; }
 
         // animator's triggers and bools names
-        public string attackingAnimationTrigger
+        public string AttackingAnimationTrigger
         {
             get { return "attacking"; }
         }
-        public string dyingAnimationTrigger
+        public string DyingAnimationTrigger
         {
             get { return "dying"; }
         }
-        public string hitAnimationTrigger
+        public string HitAnimationTrigger
         {
             get { return "hit"; }
         }
-        public string lookingOutAnimationTrigger
+        public string LookingOutAnimationTrigger
         {
             get { return "lookingOut"; }
         }
-        public string walkingAnimationBool
+        public string WalkingAnimationBool
         {
             get { return "walking"; }
         }
 
-        public bool isFacingRight { get; set; }         // bool to know which direction the character is facing
-        public SpriteRenderer spriteRenderer { get; protected set; }
+        public bool IsFacingRight { get; set; }         // bool to know which direction the character is facing
+        public SpriteRenderer SpriteRend { get; protected set; }
 
-        public BasicStats stats { get; protected set; }
+        public BasicStats EnemyStats { get; protected set; }
+
 
         [Header("For Debugging Purposes: ")]
-        public bool displayPath;           // display path gizmos or not
-        [Space(10)]
+        [SerializeField]
+        private bool displayPath;           // display path gizmos or not
 
+
+        [Space(10)]
         [Header("The unwalkable layer: ")]
-        public LayerMask unwalkableLayer;
-        [Space(10)]
+        [SerializeField]
+        private LayerMask unwalkableLayer;
+        public LayerMask UnwalkableLayer { get { return unwalkableLayer; } }
 
+
+        [Space(10)]
         [Header("Key positions: ")]
-        public Transform player;
-        public Transform spawnPosition;       // the position of first spawn
-        public Transform[] patrolWaypoints;
-        [Space(10)]
+        [SerializeField]
+        private Transform player;
+        public Transform Player { get { return player; } }
 
+        [SerializeField]
+        private Transform spawnPosition;     
+
+        [SerializeField]
+        private Transform[] patrolWayPoints;
+        public Transform[] PatrolWayPoints { get { return patrolWayPoints; } }
+
+
+        [Space(10)]
         [Header("Speed and delays: ")]
         [Range(0.1f, 10f)]
-        public float characterSpeed;       // speed for normal mouvement
+        [SerializeField]
+        private float characterSpeed;  
+        public float CharacterSpeed { get { return characterSpeed; } }
+
+
         [Space(5)]
         [Range(0.1f, 10f)]
-        public float patrolDelay;       // how much to wait in patrol point
+        [SerializeField]
+        private float patrolDelay;       // how much to wait in patrol point
+        public float PatrolDelay { get { return patrolDelay; } }
+
         [Range(0.5f, 5)]
-        public float lookOutDelay;          // look out wait time
+        [SerializeField]
+        private float lookOutDelay;          // look out wait time
+        public float LookOutDelay { get { return lookOutDelay; } }
+
         [Range(0.5f, 10f)]
-        public float attackDelay;       // delay between attacks
+        [SerializeField]
+        private float attackDelay;       // delay between attacks
+        public float AttackDelay { get { return attackDelay; } }
 
         [HideInInspector]
         public float attackRange;
@@ -83,15 +109,15 @@ namespace EnemyAI
         protected void Awake()
         {
             Spawn();
-            anim = GetComponent<Animator>();
-            spriteRenderer = GetComponent<SpriteRenderer>();
-            patrolState = new PatrolState(this);
-            chaseState = new ChaseState(this);
-            lookOutState = new LookOutState(this);
-            attackState = new AttackState(this);
-            if (patrolWaypoints == null || patrolWaypoints.Length < 1)
+            Anim = GetComponent<Animator>();
+            SpriteRend = GetComponent<SpriteRenderer>();
+            PatrolState = new PatrolState(this);
+            ChaseState = new ChaseState(this);
+            LookOutState = new LookOutState(this);
+            AttackState = new AttackState(this);
+            if (patrolWayPoints == null || patrolWayPoints.Length < 1)
             {
-                patrolWaypoints = new Transform[] { spawnPosition };
+                patrolWayPoints = new Transform[] { spawnPosition };
                 // note : maybe add another point by raycasting (walkable)
             }
             //else
@@ -104,12 +130,12 @@ namespace EnemyAI
 
         protected void Start()
         {
-            currentEnemyState = patrolState;
-            stats = BasicStats.EnemyTest();
-            if (spriteRenderer.flipX)
-                isFacingRight = false;
+            CurrentEnemyState = PatrolState;
+            EnemyStats = BasicStats.EnemyTest();
+            if (SpriteRend.flipX)
+                IsFacingRight = false;
             else
-                isFacingRight = true;
+                IsFacingRight = true;
             if (player == null)
             {
                 player = GameObject.FindGameObjectWithTag("Player").transform;
@@ -121,31 +147,31 @@ namespace EnemyAI
         {
             if (!InBlockingAnimation())
             {
-                currentEnemyState.UpdateState();
+                CurrentEnemyState.UpdateState();
             }
         }
 
         public void Flip()
         {
-            isFacingRight = !isFacingRight;
-            spriteRenderer.flipX = !spriteRenderer.flipX;
+            IsFacingRight = !IsFacingRight;
+            SpriteRend.flipX = !SpriteRend.flipX;
         }
 
         public MyAnimationState GetAnimationState()
         {
-            if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+            if (Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
             {
                 return MyAnimationState.Attack;
             }
-            if (anim.GetCurrentAnimatorStateInfo(0).IsName("Walk"))
+            if (Anim.GetCurrentAnimatorStateInfo(0).IsName("Walk"))
             {
                 return MyAnimationState.Walk;
             }
-            if (anim.GetCurrentAnimatorStateInfo(0).IsName("Dead"))
+            if (Anim.GetCurrentAnimatorStateInfo(0).IsName("Dead"))
             {
                 return MyAnimationState.Dead;
             }
-            if (anim.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
+            if (Anim.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
             {
                 return MyAnimationState.Dead;
             }
@@ -165,8 +191,8 @@ namespace EnemyAI
                     return true;
                 case MyAnimationState.Dead:
                     return true;
-                case MyAnimationState.Hit:
-                    return true;
+                //case MyAnimationState.Hit:
+                    //return true;
                 default:
                     return false;
             }
@@ -178,13 +204,13 @@ namespace EnemyAI
             {
                 return;
             }
-            int damage = DamageCalculationManager.Instance.CalculateInflictedDamage(attackerStats, stats, out outcome);
+            int damage = DamageCalculationManager.Instance.CalculateInflictedDamage(attackerStats, EnemyStats, out outcome);
             UpdateHealth(damage);
-            if (stats.currentHealth <= 0)
+            if (EnemyStats.CurrentHealth <= 0)
             {
                 isDead = true;
                 Debug.Log(gameObject.name +" is dead !");
-                anim.SetTrigger(dyingAnimationTrigger);
+                Anim.SetTrigger(DyingAnimationTrigger);
                 enabled = false;
                 DeadEnemy(gameObject);
             }
@@ -192,27 +218,27 @@ namespace EnemyAI
             {
                 if (!InBlockingAnimation() && (outcome == BasicStats.AttackOutcome.Crit || outcome == BasicStats.AttackOutcome.Hit))
                 {
-                    anim.SetTrigger(hitAnimationTrigger);
+                    Anim.SetTrigger(HitAnimationTrigger);
                 }
                 else
                 {
-                    anim.ResetTrigger(hitAnimationTrigger);
+                    Anim.ResetTrigger(HitAnimationTrigger);
                 }
             }
         }
 
         protected void OnDrawGizmos()
         {
-            if (currentEnemyState == null)
+            if (CurrentEnemyState == null)
             {
                 return;
             }
             if (displayPath)
             {
-                currentEnemyState.DrawGizmos();
+                CurrentEnemyState.DrawGizmos();
             }
 
-            Gizmos.DrawSphere(spriteRenderer.bounds.center, 0.02f);
+            Gizmos.DrawSphere(SpriteRend.bounds.center, 0.02f);
 
         }
 
@@ -226,17 +252,17 @@ namespace EnemyAI
 
         protected void UpdateHealth(int damage)
         {
-            if (damage > stats.currentHealth)
+            if (damage > EnemyStats.CurrentHealth)
             {
-                stats.currentHealth = 0;
+                EnemyStats.CurrentHealth = 0;
             }
             else
             {
-                stats.currentHealth  = stats.currentHealth - damage;
+                EnemyStats.CurrentHealth  = EnemyStats.CurrentHealth - damage;
             }
 
             Debug.Log(outcome + " => Damage inflicted by player = " + damage);
-            Debug.Log("Enemy health : " + stats.currentHealth + "/" + stats.maxHealth);
+            Debug.Log("Enemy health : " + EnemyStats.CurrentHealth + "/" + EnemyStats.MaxHealth);
         }
 
         public enum MyAnimationState

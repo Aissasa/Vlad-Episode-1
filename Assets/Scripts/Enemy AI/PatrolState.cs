@@ -39,7 +39,7 @@ namespace EnemyAI
         public void ToChaseState()
         {
             ResetVariables();
-            enemy.currentEnemyState = enemy.chaseState;
+            enemy.CurrentEnemyState = enemy.ChaseState;
         }
 
         public void ToLookOutState()
@@ -64,7 +64,7 @@ namespace EnemyAI
         protected void FlipIfNeeded()
         {
             Vector2 direction = movementHandler.GetMovementDirection();
-            if ((direction.x > 0 && !enemy.isFacingRight) || (direction.x < 0 && enemy.isFacingRight))
+            if ((direction.x > 0 && !enemy.IsFacingRight) || (direction.x < 0 && enemy.IsFacingRight))
             {
                 enemy.Flip();
             }
@@ -74,7 +74,7 @@ namespace EnemyAI
         {
             if (pathFound)
             {
-                movementHandler.Reset(enemy.gameObject, newPath, enemy.characterSpeed);
+                movementHandler.Reset(enemy.gameObject, newPath, enemy.CharacterSpeed);
             }
         }
 
@@ -82,7 +82,7 @@ namespace EnemyAI
         protected void Patrol()
         {
             if (movementHandler.PathEmpty())
-                PathRequestManager.RequestPath(enemy.transform.position, enemy.patrolWaypoints[nextWaypointIndex].Get2DPosition(), enemy.gameObject, enemy.unwalkableLayer, OnPathFound);
+                PathRequestManager.RequestPath(enemy.transform.position, enemy.PatrolWayPoints[nextWaypointIndex].Get2DPosition(), enemy.gameObject, enemy.UnwalkableLayer, OnPathFound);
             if (patrolWaitTimer > 0)
             {
                 patrolWaitTimer -= Time.deltaTime;
@@ -90,20 +90,20 @@ namespace EnemyAI
             }
 
             FlipIfNeeded();
-            enemy.anim.SetBool(enemy.walkingAnimationBool, true);
+            enemy.Anim.SetBool(enemy.WalkingAnimationBool, true);
             movementHandler.MoveAlongPath();
-            if (DirectionAndDistanceCalculator.CalculateDistance(enemy.transform.Get2DPosition(), enemy.patrolWaypoints[nextWaypointIndex].Get2DPosition()) < GameManager.Instance.aiReachingPrecision)
+            if (DirectionAndDistanceCalculator.CalculateDistance(enemy.transform.Get2DPosition(), enemy.PatrolWayPoints[nextWaypointIndex].Get2DPosition()) < GameManager.Instance.aiReachingPrecision)
             {
-                nextWaypointIndex = (nextWaypointIndex + 1) % enemy.patrolWaypoints.Length;
-                PathRequestManager.RequestPath(enemy.transform.position, enemy.patrolWaypoints[nextWaypointIndex].Get2DPosition(), enemy.gameObject, enemy.unwalkableLayer, OnPathFound);
-                patrolWaitTimer = enemy.patrolDelay;
-                enemy.anim.SetBool(enemy.walkingAnimationBool, false);
+                nextWaypointIndex = (nextWaypointIndex + 1) % enemy.PatrolWayPoints.Length;
+                PathRequestManager.RequestPath(enemy.transform.position, enemy.PatrolWayPoints[nextWaypointIndex].Get2DPosition(), enemy.gameObject, enemy.UnwalkableLayer, OnPathFound);
+                patrolWaitTimer = enemy.PatrolDelay;
+                enemy.Anim.SetBool(enemy.WalkingAnimationBool, false);
             }
         }
 
         protected bool PlayerInChasingRange()
         {
-            return DirectionAndDistanceCalculator.CalculateDistance(enemy.transform.Get2DPosition(), enemy.player.Get2DPosition()) <= enemy.chasingRange;
+            return DirectionAndDistanceCalculator.CalculateDistance(enemy.transform.Get2DPosition(), enemy.Player.Get2DPosition()) <= enemy.chasingRange;
         }
 
     }

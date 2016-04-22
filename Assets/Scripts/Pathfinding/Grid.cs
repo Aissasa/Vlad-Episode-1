@@ -5,11 +5,16 @@ using System.Collections.Generic;
 public class Grid : MonoBehaviour
 {
     //ps : test
-    public bool displayGridGizmos = false;
-    public bool showAll = false;
-    public LayerMask unwalkableMask;
-    public Vector2 gridWorldSize;
-    public float nodeRadius;
+    [SerializeField]
+    private bool displayGridGizmos = false;
+    [SerializeField]
+    private bool showAll = false;
+    [SerializeField]
+    private LayerMask unwalkableMask;
+    [SerializeField]
+    private Vector2 gridWorldSize;
+    [SerializeField]
+    private float nodeRadius;
     Node[,] grid;
 
     Vector2 worldBottomLeft;
@@ -58,12 +63,12 @@ public class Grid : MonoBehaviour
                     continue;
                 }
 
-                int checkX = node.gridX + x;
-                int checkY = node.gridY + y;
+                int checkX = node.GridX + x;
+                int checkY = node.GridY + y;
                 
                 if (checkX >= 0 && checkX < gridSizeX && checkY >= 0 && checkY < gridSizeY) // in bounds
                 {
-                    if (node.illegalNodes.Contains(grid[checkX, checkY]) && checkX>0 && checkY>0)
+                    if (node.IllegalNodes.Contains(grid[checkX, checkY]) && checkX>0 && checkY>0)
                     {
                         continue;
                     }
@@ -79,33 +84,33 @@ public class Grid : MonoBehaviour
     {
         foreach (var node in grid)
         {
-            if (node.gridX <= 0 || node.gridY <= 0 || node.gridX >= gridSizeX -1 || node.gridY >= gridSizeY -1)
+            if (node.GridX <= 0 || node.GridY <= 0 || node.GridX >= gridSizeX -1 || node.GridY >= gridSizeY -1)
             {
                 continue;
             }
-            if (node.walkable)
+            if (node.Walkable)
             {
-                if (!grid[node.gridX, node.gridY+1].walkable)
+                if (!grid[node.GridX, node.GridY+1].Walkable)
                 {
-                    if (!grid[node.gridX +1, node.gridY].walkable)
+                    if (!grid[node.GridX +1, node.GridY].Walkable)
                     {
-                        node.illegalNodes.Add(grid[node.gridX + 1, node.gridY + 1]);
+                        node.IllegalNodes.Add(grid[node.GridX + 1, node.GridY + 1]);
                     }
-                    if (!grid[node.gridX - 1, node.gridY].walkable)
+                    if (!grid[node.GridX - 1, node.GridY].Walkable)
                     {
-                        node.illegalNodes.Add(grid[node.gridX - 1, node.gridY + 1]);
+                        node.IllegalNodes.Add(grid[node.GridX - 1, node.GridY + 1]);
                     }
                 }
 
-                if (!grid[node.gridX, node.gridY - 1].walkable)
+                if (!grid[node.GridX, node.GridY - 1].Walkable)
                 {
-                    if (!grid[node.gridX + 1, node.gridY].walkable)
+                    if (!grid[node.GridX + 1, node.GridY].Walkable)
                     {
-                        node.illegalNodes.Add(grid[node.gridX + 1, node.gridY - 1]);
+                        node.IllegalNodes.Add(grid[node.GridX + 1, node.GridY - 1]);
                     }
-                    if (!grid[node.gridX - 1, node.gridY].walkable)
+                    if (!grid[node.GridX - 1, node.GridY].Walkable)
                     {
-                        node.illegalNodes.Add(grid[node.gridX - 1, node.gridY - 1]);
+                        node.IllegalNodes.Add(grid[node.GridX - 1, node.GridY - 1]);
                     }
                 }
             }
@@ -134,16 +139,16 @@ public class Grid : MonoBehaviour
             {
                 if (showAll)
                 {
-                    Gizmos.color = node.walkable ? Color.white : Color.blue;
-                    Gizmos.DrawCube(new Vector3(node.worldPosition.x, node.worldPosition.y, 0.5f),
+                    Gizmos.color = node.Walkable ? Color.white : Color.blue;
+                    Gizmos.DrawCube(new Vector3(node.WorldPosition.x, node.WorldPosition.y, 0.5f),
                         new Vector3(nodeDiameter - nodeRadius / 5, nodeDiameter - nodeRadius / 5, 0.1f));
                 }
                 else
                 {
-                    if (!node.walkable)
+                    if (!node.Walkable)
                     {
                         Gizmos.color = Color.blue;
-                        Gizmos.DrawCube(new Vector3(node.worldPosition.x, node.worldPosition.y, 0.5f),
+                        Gizmos.DrawCube(new Vector3(node.WorldPosition.x, node.WorldPosition.y, 0.5f),
                         new Vector3(nodeDiameter - nodeRadius / 5, nodeDiameter - nodeRadius / 5, 0.1f));
                     }
                 }

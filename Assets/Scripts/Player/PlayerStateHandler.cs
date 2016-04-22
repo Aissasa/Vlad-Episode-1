@@ -10,48 +10,61 @@ namespace PlayerLogic
         public delegate void DeadPlayerAction(GameObject go);
         public static event DeadPlayerAction DeadPlayer;
 
-        // urgent : add lookat to player and enemy when hit
-        public IPlayerState currentPlayerState { get; set; }
-        public AttackState attackState { get; protected set; }
-        public IdleState idleState { get; protected set; }
-        public MoveState moveState { get; protected set; }
+        public delegate void PlayerHitAction(Health health);
+        public static event PlayerHitAction HitPlayer;
 
-        public Animator anim { get; protected set; }
+        // urgent : add lookat to player and enemy when hit
+        public IPlayerState CurrentPlayerState { get; set; }
+        public AttackState AttackState { get; protected set; }
+        public IdleState IdleState { get; protected set; }
+        public MoveState MoveState { get; protected set; }
+
+        public Animator Anim { get; protected set; }
 
         // animator's triggers and bools names
-        public string attackingAnimationTrigger
+        public string AttackingAnimationTrigger
         {
             get { return "attacking"; }
         }
-        public string dyingAnimationTrigger
+        public string DyingAnimationTrigger
         {
             get { return "dying"; }
         }
-        public string hitAnimationTrigger
+        public string HitAnimationTrigger
         {
             get { return "hit"; }
         }
-        public string walkingAnimationBool
+        public string WalkingAnimationBool
         {
             get { return "walking"; }
         }
 
-        public SpriteRenderer spriteRenderer { get; protected set; }
-        public bool isFacingRight { get; set; }
+        public SpriteRenderer SpriteRend { get; protected set; }
+        public bool IsFacingRight { get; set; }
 
-        public Vector2 movementVector { get;  set; }
-        public bool isAttacking { get; set; }
+        public Vector2 MovementVector { get;  set; }
+        public bool IsAttacking { get; set; }
 
-        public BasicStats stats { get; protected set; }
+        public BasicStats PlayerStats { get; protected set; }
 
+        [SerializeField]
+        private Transform playerSpawnPosition;
+        private Transform PlayerSpawnPosition { get { return playerSpawnPosition; } }
 
-        public Transform spawnPosition;
-        public LayerMask damageableLayer;
+        [SerializeField]
+        private LayerMask damageableLayer;
+        public LayerMask DamageableLayer { get { return damageableLayer; } }
+
         [Range(0.1f, 10f)]
-        public float playerSpeed;
+        [SerializeField]
+        private float playerSpeed;
+        public float PlayerSpeed { get { return playerSpeed; } }
+
         // todo : may change depending on the weapon rather than here
         [Range(0.1f, 10f)]
-        public float playerAttackRange;
+        [SerializeField]
+        private float playerAttackRange;
+        public float PlayerAttackRange { get { return playerAttackRange; } }
 
         // todo : add attack cooldown
 
@@ -62,23 +75,23 @@ namespace PlayerLogic
         protected void Awake()
         {
             Spawn();
-            anim = GetComponent<Animator>();
-            spriteRenderer = GetComponent<SpriteRenderer>();
-            attackState = new AttackState(this);
-            idleState = new IdleState(this);
-            moveState = new MoveState(this);
+            Anim = GetComponent<Animator>();
+            SpriteRend = GetComponent<SpriteRenderer>();
+            AttackState = new AttackState(this);
+            IdleState = new IdleState(this);
+            MoveState = new MoveState(this);
 
-            stats = BasicStats.PlayerTest();
+            PlayerStats = BasicStats.PlayerTest();
         }
 
         protected void Start()
         {
-            currentPlayerState = idleState;
-            if (spriteRenderer.flipX)
-                isFacingRight = false;
+            CurrentPlayerState = IdleState;
+            if (SpriteRend.flipX)
+                IsFacingRight = false;
             else
-                isFacingRight = true;
-            isAttacking = false;
+                IsFacingRight = true;
+            IsAttacking = false;
             isDead = false;
         }
 
@@ -88,31 +101,31 @@ namespace PlayerLogic
             DetectAttack();
             if (!InBlockingAnimation())
             {
-                currentPlayerState.UpdateState();
+                CurrentPlayerState.UpdateState();
             }
         }
 
         public void Flip()
         {
-            isFacingRight = !isFacingRight;
-            spriteRenderer.flipX = !spriteRenderer.flipX;
+            IsFacingRight = !IsFacingRight;
+            SpriteRend.flipX = !SpriteRend.flipX;
         }
 
         public MyAnimationState GetAnimationState()
         {
-            if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+            if (Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
             {
                 return MyAnimationState.Attack;
             }
-            if (anim.GetCurrentAnimatorStateInfo(0).IsName("Walk"))
+            if (Anim.GetCurrentAnimatorStateInfo(0).IsName("Walk"))
             {
                 return MyAnimationState.Walk;
             }
-            if (anim.GetCurrentAnimatorStateInfo(0).IsName("Dead"))
+            if (Anim.GetCurrentAnimatorStateInfo(0).IsName("Dead"))
             {
                 return MyAnimationState.Dead;
             }
-            if (anim.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
+            if (Anim.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
             {
                 return MyAnimationState.Dead;
             }
@@ -145,13 +158,14 @@ namespace PlayerLogic
             {
                 return;
             }
-            int damage = DamageCalculationManager.Instance.CalculateInflictedDamage(attackerStats, stats, out outcome);
+            int damage = DamageCalculationManager.Instance.CalculateInflictedDamage(attackerStats, PlayerStats, out outcome);
             UpdateHealth(damage);
-            if (stats.currentHealth <= 0)
+            HitPlayer(new Health(PlayerStats));
+            if (PlayerStats.CurrentHealth <= 0)
             {
                 isDead = true;
                 Debug.Log("Player is dead !");
-                anim.SetTrigger(dyingAnimationTrigger);
+                Anim.SetTrigger(DyingAnimationTrigger);
                 enabled = false;
                 DeadPlayer(gameObject);
             }
@@ -161,43 +175,43 @@ namespace PlayerLogic
         {
             if (CrossPlatformInputManager.GetButton("Attack"))
             {
-                isAttacking = true;
+                IsAttacking = true;
             }
 
             if (CrossPlatformInputManager.GetButtonUp("Attack"))
             {
-                isAttacking = false;
+                IsAttacking = false;
             }
         }
 
         protected void Spawn()
         {
-            if (spawnPosition != null)
+            if (PlayerSpawnPosition != null)
             {
-                transform.position = spawnPosition.position;
+                transform.position = PlayerSpawnPosition.position;
             }
         }
 
         protected void UpdateHealth(int damage)
         {
-            if (damage>stats.currentHealth)
+            if (damage>PlayerStats.CurrentHealth)
             {
-                stats.currentHealth = 0;
+                PlayerStats.CurrentHealth = 0;
             }
             else
             {
-                stats.currentHealth -= damage;
+                PlayerStats.CurrentHealth -= damage;
             }
             Debug.Log(outcome + " => Damage inflicted by enemy = " + damage);
-            Debug.Log("Player health : " + stats.currentHealth + "/" + stats.maxHealth);
+            Debug.Log("Player health : " + PlayerStats.CurrentHealth + "/" + PlayerStats.MaxHealth);
         }
 
         protected void UpdateMovementVector()
         {
-            movementVector = new Vector2(CrossPlatformInputManager.GetAxisRaw("Horizontal"), CrossPlatformInputManager.GetAxisRaw("Vertical"));
+            MovementVector = new Vector2(CrossPlatformInputManager.GetAxisRaw("Horizontal"), CrossPlatformInputManager.GetAxisRaw("Vertical"));
             // todo : make movement vect coordinates >0.5
-            //anim.SetFloat("x", movementVector.x);
-            //anim.SetFloat("y", movementVector.y);
+            //Anim.SetFloat("x", MovementVector.x);
+            //Anim.SetFloat("y", MovementVector.y);
         }
 
         public void ShowCombatEffects()

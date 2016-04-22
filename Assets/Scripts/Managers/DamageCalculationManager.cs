@@ -8,23 +8,23 @@ public class DamageCalculationManager : Singleton<DamageCalculationManager> {
 
     public int CalculateInflictedDamage(BasicStats attackerStats, BasicStats defenderStats, out BasicStats.AttackOutcome outcome)
     {
-        if (Dodge(attackerStats.hitRate, defenderStats.dodgeRate))
+        if (Dodge(attackerStats.HitRate, defenderStats.DodgeRate))
         {
             outcome = BasicStats.AttackOutcome.Miss;
             return 0;
         }
-        if (Block(attackerStats.blockBreakRate, defenderStats.blockRate))
+        if (Block(attackerStats.BlockBreakRate, defenderStats.BlockRate))
         {
             outcome = BasicStats.AttackOutcome.Blocked;
-            return BlockDamageCalc(attackerStats.attack, defenderStats.defense);
+            return BlockDamageCalc(attackerStats.Attack, defenderStats.Defense);
         }
-        if (Crit(attackerStats.critRate))
+        if (Crit(attackerStats.CritRate))
         {
             outcome = BasicStats.AttackOutcome.Crit;
-            return CritDamageCalc(attackerStats.attack, defenderStats.defense, attackerStats.critDamage);
+            return CritDamageCalc(attackerStats.Attack, defenderStats.Defense, attackerStats.CritDamage);
         }
         outcome = BasicStats.AttackOutcome.Hit;
-        return DamageCalc(attackerStats.attack, defenderStats.defense);
+        return DamageCalc(attackerStats.Attack, defenderStats.Defense);
     }
 
     protected bool Block(float blockBreakRate, float blockRate)

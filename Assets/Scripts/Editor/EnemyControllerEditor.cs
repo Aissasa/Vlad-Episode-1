@@ -4,6 +4,7 @@ using UnityEditor;
 
 [CustomEditor(typeof(EnemyController))]
 [CanEditMultipleObjects]
+//todo delete this
 public class EnemyControllerEditor : TweakableEditor {
 
     SerializedProperty attackRange;

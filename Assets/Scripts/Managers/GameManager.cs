@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using PlayerLogic;
+using EnemyAI;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -14,6 +16,13 @@ public class GameManager : Singleton<GameManager>
     [HideInInspector] // todo : maybe it should be added to the enemy rather than global
     public float aiReachingPrecision; //the precision of reaching a point by the AI when walking
 
+    public static GameObject PlayerGO;
+
+    void Awake()
+    {
+        PlayerGO = GameObject.FindGameObjectWithTag("Player");
+    }
+
     void DeadEnemy(GameObject go)
     {
         Destroy(go, 5);
@@ -26,14 +35,14 @@ public class GameManager : Singleton<GameManager>
 
     void OnEnable()
     {
-        PlayerLogic.PlayerStateHandler.DeadPlayer += DeadPlayer;
-        EnemyAI.EnemyStateHandler.DeadEnemy += DeadEnemy;
+        PlayerStateHandler.DeadPlayer += DeadPlayer;
+        EnemyStateHandler.DeadEnemy += DeadEnemy;
     }
 
     void OnDisable()
     {
-        PlayerLogic.PlayerStateHandler.DeadPlayer -= DeadPlayer;
-        EnemyAI.EnemyStateHandler.DeadEnemy -= DeadEnemy;
+        PlayerStateHandler.DeadPlayer -= DeadPlayer;
+        EnemyStateHandler.DeadEnemy -= DeadEnemy;
     }
 
 

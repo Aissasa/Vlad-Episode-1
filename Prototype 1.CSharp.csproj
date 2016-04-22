@@ -89,6 +89,7 @@
     <Compile Include="Assets\Scripts\Characters Controllers\GenericCharacterController.cs" />
     <Compile Include="Assets\Scripts\Characters Controllers\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Data\Stats\BasicStats.cs" />
+    <Compile Include="Assets\Scripts\Data\Stats\Health.cs" />
     <Compile Include="Assets\Scripts\Enemy AI\AttackState.cs" />
     <Compile Include="Assets\Scripts\Enemy AI\ChaseState.cs" />
     <Compile Include="Assets\Scripts\Enemy AI\EnemyMovementHandler.cs" />
@@ -101,7 +102,6 @@
     <Compile Include="Assets\Scripts\Managers\DamageCalculationManager.cs" />
     <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
     <Compile Include="Assets\Scripts\Managers\RenderingManager.cs" />
-    <Compile Include="Assets\Scripts\Map Contollers\ScreenFader.cs" />
     <Compile Include="Assets\Scripts\Map Contollers\Warper.cs" />
     <Compile Include="Assets\Scripts\Mouvement\BezierPath.cs" />
     <Compile Include="Assets\Scripts\Mouvement\IMouvement.cs" />
@@ -119,6 +119,8 @@
     <Compile Include="Assets\Scripts\Player\IdleState.cs" />
     <Compile Include="Assets\Scripts\Player\MoveState.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerStateHandler.cs" />
+    <Compile Include="Assets\Scripts\UI\HealthBarConrtoller.cs" />
+    <Compile Include="Assets\Scripts\UI\ScreenFader.cs" />
     <Compile Include="Assets\Scripts\Util\DirectionAndDistanceCalculator.cs" />
     <Compile Include="Assets\Scripts\Util\ExtentionMethods.cs" />
     <Compile Include="Assets\Scripts\Util\PositionComparer.cs" />

@@ -33,7 +33,7 @@ namespace EnemyAI
         public void ToChaseState()
         {
             ResetVariables();
-            enemy.currentEnemyState = enemy.chaseState;
+            enemy.CurrentEnemyState = enemy.ChaseState;
         }
 
         public void ToLookOutState()
@@ -59,9 +59,9 @@ namespace EnemyAI
         {
             if (attackTimer <= 0)
             {
-                enemy.anim.SetTrigger(enemy.attackingAnimationTrigger);
-                enemy.player.GetComponent<IDamageable>().TakeDamage(enemy.stats);
-                attackTimer = enemy.attackDelay;
+                enemy.Anim.SetTrigger(enemy.AttackingAnimationTrigger);
+                enemy.Player.GetComponent<IDamageable>().TakeDamage(enemy.EnemyStats);
+                attackTimer = enemy.AttackDelay;
             }
             else
             {
@@ -75,8 +75,8 @@ namespace EnemyAI
 
         protected void LookAtPlayer()
         {
-            if (enemy.transform.Get2DPosition().IsAtLeftOf(enemy.player.Get2DPosition()) && !enemy.isFacingRight ||
-                !enemy.transform.Get2DPosition().IsAtLeftOf(enemy.player.Get2DPosition()) && enemy.isFacingRight)
+            if (enemy.transform.Get2DPosition().IsAtLeftOf(enemy.Player.Get2DPosition()) && !enemy.IsFacingRight ||
+                !enemy.transform.Get2DPosition().IsAtLeftOf(enemy.Player.Get2DPosition()) && enemy.IsFacingRight)
             {
                 enemy.Flip();
             }
@@ -84,7 +84,7 @@ namespace EnemyAI
 
         protected bool PlayerInAttackRange()
         {
-            return DirectionAndDistanceCalculator.CalculateDistance(enemy.transform.Get2DPosition(), enemy.player.Get2DPosition()) <= enemy.attackRange;
+            return DirectionAndDistanceCalculator.CalculateDistance(enemy.transform.Get2DPosition(), enemy.Player.Get2DPosition()) <= enemy.attackRange;
         }
 
     }

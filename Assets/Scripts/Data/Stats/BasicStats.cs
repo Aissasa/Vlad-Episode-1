@@ -5,43 +5,39 @@ using System;
 [Serializable]
 public class BasicStats
 {
-    public int maxHealth { get; set; }
-    public int currentHealth { get; set; }
-    public int defense { get; set; }
-    public float dodgeRate { get; set; }
-    public float blockRate { get; set; }
-    public int attack { get; set; }
-    public float hitRate { get; set; }
-    public float blockBreakRate { get; set; }
-    public float critRate { get; set; }
-    public float critDamage { get; set; }
+    public int MaxHealth { get; set; }
+    public int CurrentHealth { get; set; }
+    public int Defense { get; set; }
+    public float DodgeRate { get; set; }
+    public float BlockRate { get; set; }
+    public int Attack { get; set; }
+    public float HitRate { get; set; }
+    public float BlockBreakRate { get; set; }
+    public float CritRate { get; set; }
+    public float CritDamage { get; set; }
 
-    public BasicStats(int _maxHealth, int _currentHealth, int _defense, float _dodgeRate, float _blockRate, int _attack, float _hitRate, float _blockBreakRate, float _critRate, float _critDamage)
+    public BasicStats(int maxHealth, int defense, float dodgeRate, float blockRate, int attack, float hitRate, float blockBreakRate, float critRate, float critDamage)
     {
-        maxHealth = _maxHealth;
-        currentHealth = _currentHealth;
-        if (currentHealth == 0)
-        {
-            currentHealth = maxHealth;
-        }
-        defense = _defense;
-        dodgeRate = _dodgeRate;
-        blockRate = _blockRate;
-        attack = _attack;
-        hitRate = _hitRate;
-        blockBreakRate = _blockBreakRate;
-        critRate = _critRate;
-        critDamage = _critDamage;
+        MaxHealth = maxHealth;
+        CurrentHealth = MaxHealth;
+        Defense = defense;
+        DodgeRate = dodgeRate;
+        BlockRate = blockRate;
+        Attack = attack;
+        HitRate = hitRate;
+        BlockBreakRate = blockBreakRate;
+        CritRate = critRate;
+        CritDamage = critDamage;
     }
 
     public static BasicStats PlayerTest()
     {
-        return new BasicStats(1000, 1000, 50, 25, 40, 100, 120, 110, 50, 50);
+        return new BasicStats(1000, 50, 25, 40, 100, 120, 110, 50, 50);
     }
 
     public static BasicStats EnemyTest()
     {
-        return new BasicStats(500, 500, 10, 2, 3, 60, 100, 100, 10, 10);
+        return new BasicStats(500, 10, 2, 3, 60, 100, 100, 10, 10);
     }
 
     public enum AttackOutcome
