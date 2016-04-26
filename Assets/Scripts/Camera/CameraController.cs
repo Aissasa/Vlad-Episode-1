@@ -2,6 +2,9 @@
 using System.Collections;
 using Tiled2Unity;
 using System;
+using UnityStandardAssets.CrossPlatformInput;
+using EnemyAI;
+
 
 public class CameraController : MonoBehaviour
 {
@@ -14,12 +17,25 @@ public class CameraController : MonoBehaviour
     [SerializeField]
     private float camLerpSpeed;
 
+    [Space(10)]
     [Range(0, 2)]
     [SerializeField]
     private float horizontalCamBuffer;
     [Range(0, 2)]
     [SerializeField]
     private float verticalCamBuffer;
+
+
+    [Space(10)]
+    [Range(0, 2)]
+    [SerializeField]
+    private float shakeDuration;
+    [Range(0, 2)]
+    [SerializeField]
+    private float shakeMagnitude;
+    [Range(1, 5)]
+    [SerializeField]
+    private float shakeSpeed;
 
 
     Transform player;
@@ -57,6 +73,22 @@ public class CameraController : MonoBehaviour
         //adjust the camera to the resolution of the screen
         cam.orthographicSize = (Screen.height / 100f) / camScale;
         ResetCamPosition();
+    }
+
+    void OnEnable()
+    {
+        EnemyStateHandler.HitEnemy += ShakeForHit;
+    }
+
+    void OnDisable()
+    {
+        EnemyStateHandler.HitEnemy -= ShakeForHit;
+    }
+
+    private void ShakeForHit()
+    {
+        StopAllCoroutines();
+        StartCoroutine(Shake());
     }
 
     private void ResetCamPosition()
@@ -151,6 +183,42 @@ public class CameraController : MonoBehaviour
             transform.position = buffer;
         }
 
+    }
+
+    IEnumerator Shake()
+    {
+        float elapsed = 0.0f;
+
+        Vector3 originalCamPos = cam.transform.position;
+        float randomStart = UnityEngine.Random.Range(-1000.0f, 1000.0f);
+
+        while (elapsed < shakeDuration)
+        {
+
+            elapsed += Time.deltaTime;
+
+            float percentComplete = elapsed / shakeDuration;
+
+            // to reduce the shaking magnitude from full power to 0, beginning from halfway the shaking duration
+            float damper = 1.0f - Mathf.Clamp(2.0f * percentComplete - 1.0f, 0.0f, 1.0f);
+
+            float alpha = randomStart +  shakeSpeed * percentComplete;
+
+            // map value to [-1, 1], that smoothly change thanks to Perlin noise
+            float x = SimplexNoise.Noise(alpha, 0);
+            float y = SimplexNoise.Noise(0, alpha);
+            //float x = Mathf.PerlinNoise(alpha, 0);
+            //float y = Mathf.PerlinNoise(0, alpha);
+
+            x *= shakeMagnitude * damper;
+            y *= shakeMagnitude * damper;
+
+            cam.transform.position = new Vector3(originalCamPos.x + x, originalCamPos.y + y, originalCamPos.z);
+
+            yield return null;
+        }
+
+        cam.transform.position = originalCamPos;
     }
 
     private bool PlayerStillOutLeft()

@@ -55,7 +55,7 @@ namespace EnemyAI
         public void UpdateState()
         {
             Patrol();
-            if (PlayerInChasingRange())
+            if (PlayerInChasingRange() && !GameManager.Instance.PlayerIsDead)
             {
                 ToChaseState();
             }

@@ -111,7 +111,7 @@ public class EnemyController : GenericCharacterController
 
         if (isChasing)
         {
-            LinearMouvement.Instance.MoveToPosition(gameObject, currentWayPoint, characterSpeed);
+            LinearMouvement.Instance.MoveTo(gameObject, currentWayPoint, characterSpeed);
             if (transform.Get2DPosition() == currentWayPoint)
             {
                 targetIndex++;

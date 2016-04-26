@@ -13,6 +13,10 @@ namespace PlayerLogic
         public delegate void PlayerHitAction(Health health);
         public static event PlayerHitAction HitPlayer;
 
+        public delegate void PlayerDamagedAction(GameObject player, int damage, BasicStats.AttackOutcome outcome);
+        public static event PlayerDamagedAction DamagedPlayer;
+
+
         // urgent : add lookat to player and enemy when hit
         public IPlayerState CurrentPlayerState { get; set; }
         public AttackState AttackState { get; protected set; }
@@ -160,6 +164,7 @@ namespace PlayerLogic
             }
             int damage = DamageCalculationManager.Instance.CalculateInflictedDamage(attackerStats, PlayerStats, out outcome);
             UpdateHealth(damage);
+            DamagedPlayer(gameObject, damage, outcome);
             HitPlayer(new Health(PlayerStats));
             if (PlayerStats.CurrentHealth <= 0)
             {
@@ -168,6 +173,20 @@ namespace PlayerLogic
                 Anim.SetTrigger(DyingAnimationTrigger);
                 enabled = false;
                 DeadPlayer(gameObject);
+            }
+        }
+
+        protected void ApplyDamage()
+        {
+            if (CurrentPlayerState != AttackState)
+            {
+                Debug.Log("Not in attack state");
+                return;
+            }
+
+            foreach (var character in AttackState.AttackTargets)
+            {
+                character.GetComponent<IDamageable>().TakeDamage(PlayerStats);
             }
         }
 

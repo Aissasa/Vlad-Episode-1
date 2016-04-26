@@ -50,14 +50,15 @@ public class DamageCalculationManager : Singleton<DamageCalculationManager> {
 
     protected int DamageCalc(int attack, int defense)
     {
-        int roll = UnityEngine.Random.Range(8, 12);
-        int dmg = (attack / defense) * roll;
+        Debug.Log((float)attack / defense);
+        float roll = UnityEngine.Random.Range(8, 12);
+        float dmg = ((float) attack / defense) * roll;
         //int dmg = attack - defense;
         if (dmg <= 0)
         {
             dmg = 1;
         }
-        return dmg;
+        return Mathf.RoundToInt(dmg);
     }
 
     protected bool Dodge(float hitRate, float dodgeRate)

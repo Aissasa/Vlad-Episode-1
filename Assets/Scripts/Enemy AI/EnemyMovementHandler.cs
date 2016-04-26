@@ -51,7 +51,7 @@ namespace EnemyAI
                 return;
             }
 
-            LinearMouvement.Instance.MoveToPosition(gameObject, CurrentWayPoint, CharSpeed);
+            LinearMouvement.Instance.MoveTo(gameObject, CurrentWayPoint, CharSpeed);
             // note : move along path with == or with distance
             if (gameObject.transform.Get2DPosition() == CurrentWayPoint)
             //if( DirectionAndDistanceCalculator.CalculateDistance(gameObject.transform.Get2DPosition(), currentWayPoint)<= GameManager.Instance.aiReachingPrecision)

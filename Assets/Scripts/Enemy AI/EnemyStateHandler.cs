@@ -10,6 +10,13 @@ namespace EnemyAI
         public delegate void DeadEnemyAction(GameObject go);
         public static event DeadEnemyAction DeadEnemy;
 
+        public delegate void HitEnemyAction();
+        public static event HitEnemyAction HitEnemy;
+
+        public delegate void EnemyDamagedAction(GameObject enemy, int damage, BasicStats.AttackOutcome outcome);
+        public static event EnemyDamagedAction DamagedEnemy;
+
+
         public IEnemyState CurrentEnemyState { protected get; set; }
         public PatrolState PatrolState { get; protected set; }
         public ChaseState ChaseState { get; protected set; }
@@ -44,7 +51,6 @@ namespace EnemyAI
         public SpriteRenderer SpriteRend { get; protected set; }
 
         public BasicStats EnemyStats { get; protected set; }
-
 
         [Header("For Debugging Purposes: ")]
         [SerializeField]
@@ -145,6 +151,10 @@ namespace EnemyAI
 
         protected void FixedUpdate()
         {
+            if (GameManager.Instance.PlayerIsDead)
+            {
+                CurrentEnemyState = PatrolState;
+            }
             if (!InBlockingAnimation())
             {
                 CurrentEnemyState.UpdateState();
@@ -206,6 +216,11 @@ namespace EnemyAI
             }
             int damage = DamageCalculationManager.Instance.CalculateInflictedDamage(attackerStats, EnemyStats, out outcome);
             UpdateHealth(damage);
+            DamagedEnemy(gameObject, damage, outcome);
+            if (outcome == BasicStats.AttackOutcome.Hit || outcome == BasicStats.AttackOutcome.Crit)
+            {
+                HitEnemy();
+            }
             if (EnemyStats.CurrentHealth <= 0)
             {
                 isDead = true;
@@ -227,6 +242,10 @@ namespace EnemyAI
             }
         }
 
+        protected void DamagePlayer()
+        {
+            player.GetComponent<IDamageable>().TakeDamage(EnemyStats);
+        }
         protected void OnDrawGizmos()
         {
             if (CurrentEnemyState == null)

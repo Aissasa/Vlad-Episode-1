@@ -32,12 +32,12 @@ public class BasicStats
 
     public static BasicStats PlayerTest()
     {
-        return new BasicStats(1000, 50, 25, 40, 100, 120, 110, 50, 50);
+        return new BasicStats(100, 50, 25, 40, 100, 120, 110, 50, 50);
     }
 
     public static BasicStats EnemyTest()
     {
-        return new BasicStats(500, 10, 2, 3, 60, 100, 100, 10, 10);
+        return new BasicStats(500, 10, 10, 20, 60, 100, 100, 10, 10);
     }
 
     public enum AttackOutcome

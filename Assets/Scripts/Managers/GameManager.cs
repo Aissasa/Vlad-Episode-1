@@ -18,9 +18,17 @@ public class GameManager : Singleton<GameManager>
 
     public static GameObject PlayerGO;
 
+    public bool PlayerIsDead { get; private set; }
+
     void Awake()
     {
         PlayerGO = GameObject.FindGameObjectWithTag("Player");
+        PlayerIsDead = false;
+    }
+
+    public Health GetCurrentPlayerHealth()
+    {
+        return new Health(PlayerGO.GetComponent<PlayerStateHandler>().PlayerStats);
     }
 
     void DeadEnemy(GameObject go)
@@ -31,6 +39,7 @@ public class GameManager : Singleton<GameManager>
     void DeadPlayer(GameObject go)
     {
         // todo : add player death logic here
+        PlayerIsDead = true;
     }
 
     void OnEnable()

@@ -99,6 +99,7 @@
     <Compile Include="Assets\Scripts\Enemy AI\PatrolState.cs" />
     <Compile Include="Assets\Scripts\ICombatEffect.cs" />
     <Compile Include="Assets\Scripts\IDamageable.cs" />
+    <Compile Include="Assets\Scripts\Managers\CombatTextManager.cs" />
     <Compile Include="Assets\Scripts\Managers\DamageCalculationManager.cs" />
     <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
     <Compile Include="Assets\Scripts\Managers\RenderingManager.cs" />
@@ -119,11 +120,13 @@
     <Compile Include="Assets\Scripts\Player\IdleState.cs" />
     <Compile Include="Assets\Scripts\Player\MoveState.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerStateHandler.cs" />
+    <Compile Include="Assets\Scripts\UI\CombatText.cs" />
     <Compile Include="Assets\Scripts\UI\HealthBarConrtoller.cs" />
     <Compile Include="Assets\Scripts\UI\ScreenFader.cs" />
     <Compile Include="Assets\Scripts\Util\DirectionAndDistanceCalculator.cs" />
     <Compile Include="Assets\Scripts\Util\ExtentionMethods.cs" />
     <Compile Include="Assets\Scripts\Util\PositionComparer.cs" />
+    <Compile Include="Assets\Scripts\Util\SimplexNoise.cs" />
     <Compile Include="Assets\Scripts\Util\Singleton.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\ImportBehaviour.cs" />
     <Compile Include="Assets\Tiled2Unity\Scripts\Runtime\SortingLayerExposed.cs" />

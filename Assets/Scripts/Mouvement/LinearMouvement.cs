@@ -44,7 +44,12 @@ public class LinearMouvement : IMouvement
         rb2d.MovePosition(rb2d.position + movementVector * Time.deltaTime * speed);
     }
 
-    public void MoveToPosition(GameObject go, Vector2 targetPos, float speed)
+    public void MoveTowards(Transform trans, Vector2 movementVector, float speed)
+    {
+        trans.Translate( movementVector * Time.deltaTime * speed);
+    }
+
+    public void MoveTo(GameObject go, Vector2 targetPos, float speed)
     {
         Transform trans = go.GetComponent<Transform>();
         trans.position = Vector2.MoveTowards(trans.Get2DPosition(), targetPos, speed * Time.deltaTime);
