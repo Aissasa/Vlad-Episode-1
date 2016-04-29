@@ -97,7 +97,6 @@
     <Compile Include="Assets\Scripts\Enemy AI\IEnemyState.cs" />
     <Compile Include="Assets\Scripts\Enemy AI\LookOutState.cs" />
     <Compile Include="Assets\Scripts\Enemy AI\PatrolState.cs" />
-    <Compile Include="Assets\Scripts\ICombatEffect.cs" />
     <Compile Include="Assets\Scripts\IDamageable.cs" />
     <Compile Include="Assets\Scripts\Managers\CombatTextManager.cs" />
     <Compile Include="Assets\Scripts\Managers\DamageCalculationManager.cs" />

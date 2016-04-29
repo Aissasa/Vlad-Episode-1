@@ -244,6 +244,7 @@ namespace EnemyAI
 
         protected void DamagePlayer()
         {
+            // urgent : the distance can change the dodge odds
             player.GetComponent<IDamageable>().TakeDamage(EnemyStats);
         }
         protected void OnDrawGizmos()
@@ -256,8 +257,6 @@ namespace EnemyAI
             {
                 CurrentEnemyState.DrawGizmos();
             }
-
-            Gizmos.DrawSphere(SpriteRend.bounds.center, 0.02f);
 
         }
 
@@ -279,9 +278,6 @@ namespace EnemyAI
             {
                 EnemyStats.CurrentHealth  = EnemyStats.CurrentHealth - damage;
             }
-
-            Debug.Log(outcome + " => Damage inflicted by player = " + damage);
-            Debug.Log("Enemy health : " + EnemyStats.CurrentHealth + "/" + EnemyStats.MaxHealth);
         }
 
         public enum MyAnimationState

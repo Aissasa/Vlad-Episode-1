@@ -13,6 +13,7 @@ public class Grid : MonoBehaviour
     private LayerMask unwalkableMask;
     [SerializeField]
     private Vector2 gridWorldSize;
+    public Vector2 GridWorldSize { get { return gridWorldSize; } }
     [SerializeField]
     private float nodeRadius;
     Node[,] grid;

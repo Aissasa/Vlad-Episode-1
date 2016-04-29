@@ -8,8 +8,6 @@ using EnemyAI;
 
 public class CameraController : MonoBehaviour
 {
-    public GameObject currentMap; // todo: search with tag better, and add event to change it in warp
-
     [Range(1, 10)]
     [SerializeField]
     private float camScale;
@@ -37,31 +35,28 @@ public class CameraController : MonoBehaviour
     [SerializeField]
     private float shakeSpeed;
 
-
-    Transform player;
+    Camera cam;
     Vector3 playerFirstPosition;
     Vector3 cameraSpacer; // to insure z is not 0
 
-    Vector2 mapTopLeft;
-    Vector2 mapBottomRight;
+    Vector2 mapTopRight;
+    Vector2 mapBottomLeft;
     bool outLeft;
     bool outRight;
     bool outTop;
     bool outButtom;
 
-    Camera cam;
-
     void Awake()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
         playerFirstPosition = GameObject.FindGameObjectWithTag("PlayerFirstPosition").GetComponent<Transform>().position;
         cam = GetComponent<Camera>();
         cameraSpacer = new Vector3(0, 0, -10);
 
         transform.position = playerFirstPosition + cameraSpacer;
 
-        mapTopLeft = currentMap.GetComponent<TiledMap>().GetMapTopLeftPos();
-        mapBottomRight = currentMap.GetComponent<TiledMap>().GetMapBottomRightPos();
+        mapTopRight = GameManager.Instance.GetMapTopRightPosition();
+        mapBottomLeft = GameManager.Instance.GetMapBottomLeftPosition();
+
         outLeft = false;
         outRight = false;
         outTop = false;
@@ -93,8 +88,9 @@ public class CameraController : MonoBehaviour
 
     private void ResetCamPosition()
     {
-        if (player)
+        if (GameManager.PlayerGO)
         {
+            Transform player = GameManager.PlayerGO.transform;
             // smooth camera transition following the player
             Vector3 buffer = Vector3.Lerp(transform.position, player.position, camLerpSpeed) + cameraSpacer;
             Vector2 camButtomLeft = cam.BoundsMin();
@@ -102,7 +98,7 @@ public class CameraController : MonoBehaviour
 
             if (!outLeft) // if cam is not blocked out left
             {
-                if (camButtomLeft.x <= mapTopLeft.x - horizontalCamBuffer) // test if the left edge of the cam surpassed the map's
+                if (camButtomLeft.x <= mapBottomLeft.x - horizontalCamBuffer) // test if the left edge of the cam surpassed the map's
                 {
                     outLeft = true;                 // then the cam is outleft
                     buffer.x = transform.position.x; // so we block it
@@ -122,7 +118,7 @@ public class CameraController : MonoBehaviour
 
             if (!outButtom)
             {
-                if (camButtomLeft.y <= mapBottomRight.y - verticalCamBuffer)
+                if (camButtomLeft.y <= mapBottomLeft.y - verticalCamBuffer)
                 {
                     outButtom = true;
                     buffer.y = transform.position.y;
@@ -142,7 +138,7 @@ public class CameraController : MonoBehaviour
 
             if (!outRight)
             {
-                if (camTopRight.x >= mapBottomRight.x + horizontalCamBuffer)
+                if (camTopRight.x >= mapTopRight.x + horizontalCamBuffer)
                 {
                     outRight = true;
                     buffer.x = transform.position.x;
@@ -162,7 +158,7 @@ public class CameraController : MonoBehaviour
 
             if (!outTop)
             {
-                if (camTopRight.y >= mapTopLeft.y + verticalCamBuffer)
+                if (camTopRight.y >= mapTopRight.y + verticalCamBuffer)
                 {
                     outTop = true;
                     buffer.y = transform.position.y;
@@ -223,22 +219,22 @@ public class CameraController : MonoBehaviour
 
     private bool PlayerStillOutLeft()
     {
-        return player.Get2DPosition().x < cam.transform.Get2DPosition().x;
+        return GameManager.PlayerGO.transform.Get2DPosition().x < cam.transform.Get2DPosition().x;
     }
 
     private bool PlayerStillOutRight()
     {
-        return player.Get2DPosition().x > cam.transform.Get2DPosition().x;
+        return GameManager.PlayerGO.transform.Get2DPosition().x > cam.transform.Get2DPosition().x;
     }
 
     private bool PlayerStillOutTop()
     {
-        return player.Get2DPosition().y > cam.transform.Get2DPosition().y;
+        return GameManager.PlayerGO.transform.Get2DPosition().y > cam.transform.Get2DPosition().y;
     }
 
     private bool PlayerStillOutBottom()
     {
-        return player.Get2DPosition().y < cam.transform.Get2DPosition().y;
+        return GameManager.PlayerGO.transform.Get2DPosition().y < cam.transform.Get2DPosition().y;
     }
 
 }

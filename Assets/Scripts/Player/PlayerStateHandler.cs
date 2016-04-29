@@ -5,7 +5,7 @@ using UnityStandardAssets.CrossPlatformInput;
 
 namespace PlayerLogic
 {
-    public class PlayerStateHandler : MonoBehaviour, IDamageable, ICombatEffect
+    public class PlayerStateHandler : MonoBehaviour, IDamageable
     {
         public delegate void DeadPlayerAction(GameObject go);
         public static event DeadPlayerAction DeadPlayer;
@@ -74,7 +74,9 @@ namespace PlayerLogic
 
         protected BasicStats.AttackOutcome outcome;
         protected bool isDead;
-        
+
+        private Vector2 positionToRollTo;
+        private float timer;
 
         protected void Awake()
         {
@@ -101,6 +103,13 @@ namespace PlayerLogic
 
         protected void Update()
         {
+            // urgent : fix roll : add it as a state
+            if (GameManager.Instance.GameTimer - timer < 0.5f)
+            {
+                LinearMouvement.Instance.MoveTo(gameObject, positionToRollTo, playerSpeed * 1.5f);
+                return;
+            }
+
             UpdateMovementVector();
             DetectAttack();
             if (!InBlockingAnimation())
@@ -221,8 +230,6 @@ namespace PlayerLogic
             {
                 PlayerStats.CurrentHealth -= damage;
             }
-            Debug.Log(outcome + " => Damage inflicted by enemy = " + damage);
-            Debug.Log("Player health : " + PlayerStats.CurrentHealth + "/" + PlayerStats.MaxHealth);
         }
 
         protected void UpdateMovementVector()
@@ -233,10 +240,21 @@ namespace PlayerLogic
             //Anim.SetFloat("y", MovementVector.y);
         }
 
-        public void ShowCombatEffects()
+        void OnEnable()
         {
-            // todo : attack outcome floating texts
-            Debug.Log(outcome);
+            Joystick.Roll += RollAction;
+        }
+
+        void OnDisable()
+        {
+            Joystick.Roll -= RollAction;
+        }
+
+        protected void RollAction(Vector2 direction)
+        {
+            // urgent : fix roll here too , add roll speed multip and roll time in editor
+            timer = GameManager.Instance.GameTimer;
+            positionToRollTo = transform.Get2DPosition() + direction;
         }
 
         public enum MyAnimationState

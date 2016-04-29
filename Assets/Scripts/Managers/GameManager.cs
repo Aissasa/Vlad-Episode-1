@@ -2,6 +2,7 @@
 using System.Collections;
 using PlayerLogic;
 using EnemyAI;
+using System;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -20,15 +21,37 @@ public class GameManager : Singleton<GameManager>
 
     public bool PlayerIsDead { get; private set; }
 
+    public float GameTimer { get; set; }
+
+    [SerializeField]
+    private GameObject currentMap; // todo: search with tag better, and add event to change it in warp
+    public GameObject CuurentMap { get { return currentMap; } set { currentMap = value; } }
+
     void Awake()
     {
         PlayerGO = GameObject.FindGameObjectWithTag("Player");
         PlayerIsDead = false;
+        GameTimer = 0;
+    }
+
+    void Update()
+    {
+        GameTimer += Time.deltaTime;
     }
 
     public Health GetCurrentPlayerHealth()
     {
         return new Health(PlayerGO.GetComponent<PlayerStateHandler>().PlayerStats);
+    }
+
+    public Vector2 GetMapBottomLeftPosition()
+    {
+        return currentMap.transform.Get2DPosition() - currentMap.GetComponentInChildren<Grid>().GridWorldSize / 2;
+    }
+
+    public Vector2 GetMapTopRightPosition()
+    {
+        return currentMap.transform.Get2DPosition() + currentMap.GetComponentInChildren<Grid>().GridWorldSize / 2;
     }
 
     void DeadEnemy(GameObject go)
@@ -53,6 +76,5 @@ public class GameManager : Singleton<GameManager>
         PlayerStateHandler.DeadPlayer -= DeadPlayer;
         EnemyStateHandler.DeadEnemy -= DeadEnemy;
     }
-
 
 }
