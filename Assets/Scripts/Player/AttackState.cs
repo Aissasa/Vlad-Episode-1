@@ -38,6 +38,11 @@ namespace PlayerLogic
             player.CurrentPlayerState = player.IdleState;
         }
 
+        public void ToRollState()
+        {
+            Debug.Log("Cant go to the roll state from attack state");
+        }
+
         public void UpdateState()
         {
             LaunchAttack();

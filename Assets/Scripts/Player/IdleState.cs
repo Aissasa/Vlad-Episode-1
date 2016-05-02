@@ -33,6 +33,12 @@ namespace PlayerLogic
             player.CurrentPlayerState = player.MoveState;
         }
 
+        public void ToRollState()
+        {
+            player.Anim.SetBool(player.WalkingAnimationBool, true);
+            player.CurrentPlayerState = player.RollState;
+        }
+
         public void UpdateState()
         {
             if (Vector2.zero != player.MovementVector)
@@ -43,6 +49,11 @@ namespace PlayerLogic
             {
                 ToAttackState();
             }
+            if (Vector2.zero != player.PositionToRollTo)
+            {
+                ToRollState();
+            }
+
         }
     }
 }

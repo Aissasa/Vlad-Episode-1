@@ -14,6 +14,8 @@ namespace PlayerLogic
 
         void ToMoveState();
 
+        void ToRollState();
+
         void UpdateState();
 
     }

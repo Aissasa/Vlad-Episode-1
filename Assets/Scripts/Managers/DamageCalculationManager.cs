@@ -50,7 +50,6 @@ public class DamageCalculationManager : Singleton<DamageCalculationManager> {
 
     protected int DamageCalc(int attack, int defense)
     {
-        Debug.Log((float)attack / defense);
         float roll = UnityEngine.Random.Range(8, 12);
         float dmg = ((float) attack / defense) * roll;
         //int dmg = attack - defense;

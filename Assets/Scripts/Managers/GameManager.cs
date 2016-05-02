@@ -27,6 +27,10 @@ public class GameManager : Singleton<GameManager>
     private GameObject currentMap; // todo: search with tag better, and add event to change it in warp
     public GameObject CuurentMap { get { return currentMap; } set { currentMap = value; } }
 
+    [SerializeField]
+    private LayerMask unwalkableLayer;
+    public LayerMask UnwalkableLayer { get { return unwalkableLayer; } }
+
     void Awake()
     {
         PlayerGO = GameObject.FindGameObjectWithTag("Player");

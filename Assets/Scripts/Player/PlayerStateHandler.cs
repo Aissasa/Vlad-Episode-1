@@ -22,6 +22,7 @@ namespace PlayerLogic
         public AttackState AttackState { get; protected set; }
         public IdleState IdleState { get; protected set; }
         public MoveState MoveState { get; protected set; }
+        public RollState RollState { get; protected set; }
 
         public Animator Anim { get; protected set; }
 
@@ -43,7 +44,10 @@ namespace PlayerLogic
             get { return "walking"; }
         }
 
+        public Vector2 PositionToRollTo { get; set; }
+
         public SpriteRenderer SpriteRend { get; protected set; }
+
         public bool IsFacingRight { get; set; }
 
         public Vector2 MovementVector { get;  set; }
@@ -59,24 +63,47 @@ namespace PlayerLogic
         private LayerMask damageableLayer;
         public LayerMask DamageableLayer { get { return damageableLayer; } }
 
+        [Space(10)]
         [Range(0.1f, 10f)]
         [SerializeField]
         private float playerSpeed;
         public float PlayerSpeed { get { return playerSpeed; } }
 
         // todo : may change depending on the weapon rather than here
+        [Space(5)]
         [Range(0.1f, 10f)]
         [SerializeField]
         private float playerAttackRange;
         public float PlayerAttackRange { get { return playerAttackRange; } }
 
+        [Space(5)]
+        [Range(0.1f, 10f)]
+        [SerializeField]
+        private float playerAttackReach;
+        public float PlayerAttackReach { get { return playerAttackRange; } }
+
+
+        [Space(10)]
+        [SerializeField]
+        [Range(0.1f, 1)]
+        private float rollDuration;
+        public float RollDuration { get { return rollDuration; } }
+
+        [SerializeField]
+        [Range( 1, 3)]
+        private float rollBurst;
+        public float RollBurst { get { return rollBurst; } }
+
+        [SerializeField]
+        [Range(20, 200)]
+        private float rollDodgeBuff;
+        public float RollDodgeBuff { get { return rollDodgeBuff; } }
+
+
         // todo : add attack cooldown
 
         protected BasicStats.AttackOutcome outcome;
         protected bool isDead;
-
-        private Vector2 positionToRollTo;
-        private float timer;
 
         protected void Awake()
         {
@@ -86,6 +113,7 @@ namespace PlayerLogic
             AttackState = new AttackState(this);
             IdleState = new IdleState(this);
             MoveState = new MoveState(this);
+            RollState = new RollState(this);
 
             PlayerStats = BasicStats.PlayerTest();
         }
@@ -103,13 +131,6 @@ namespace PlayerLogic
 
         protected void Update()
         {
-            // urgent : fix roll : add it as a state
-            if (GameManager.Instance.GameTimer - timer < 0.5f)
-            {
-                LinearMouvement.Instance.MoveTo(gameObject, positionToRollTo, playerSpeed * 1.5f);
-                return;
-            }
-
             UpdateMovementVector();
             DetectAttack();
             if (!InBlockingAnimation())
@@ -212,6 +233,15 @@ namespace PlayerLogic
             }
         }
 
+        protected void RollAction(Vector2 direction)
+        {
+            // initiate roll only when in those states
+            if (CurrentPlayerState == IdleState || CurrentPlayerState == MoveState)
+            {
+                PositionToRollTo = transform.Get2DPosition() + direction;
+            }
+        }
+
         protected void Spawn()
         {
             if (PlayerSpawnPosition != null)
@@ -250,13 +280,6 @@ namespace PlayerLogic
             Joystick.Roll -= RollAction;
         }
 
-        protected void RollAction(Vector2 direction)
-        {
-            // urgent : fix roll here too , add roll speed multip and roll time in editor
-            timer = GameManager.Instance.GameTimer;
-            positionToRollTo = transform.Get2DPosition() + direction;
-        }
-
         public enum MyAnimationState
         {
             Idle,
@@ -266,11 +289,40 @@ namespace PlayerLogic
             Dead
         }
 
-        // ps : for debug
-        //void OnDrawGizmos()
-        //{
-        //    Gizmos.DrawSphere(spriteRenderer.bounds.center, 0.02f);
-        //}
+        public void SpawnTrailPart()
+        {
+            GameObject trailPart = new GameObject();
+            trailPart.AddComponent(SpriteRend);
+            SpriteRenderer trailPartRenderer = trailPart.GetComponent<SpriteRenderer>();
+            trailPartRenderer.sortingLayerName = SpriteRend.sortingLayerName;
+            trailPartRenderer.sortingOrder = SpriteRend.sortingOrder;
+            Color col = trailPartRenderer.color;
+            trailPartRenderer.color = new Color(col.r, col.g, col.b, 0.5f);
+
+            trailPart.transform.position = transform.position;
+            trailPart.transform.localScale = transform.localScale;
+
+            StartCoroutine(FadeTrailPart(trailPartRenderer));
+            Destroy(trailPart, 0.3f); 
+        }
+
+        IEnumerator FadeTrailPart(SpriteRenderer trailPartRenderer)
+        {
+            Color color = trailPartRenderer.color;
+            color.a -= 0.4f; // replace 0.5f with needed alpha decrement
+            trailPartRenderer.color = color;
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        public void InvokeAfterImage()
+        {
+            Invoke("SpawnTrailPart", 0);
+        }
+
+
     }
+
+
 
 }

@@ -34,6 +34,12 @@ namespace PlayerLogic
             Debug.Log("Cant go to the same state");
         }
 
+        public void ToRollState()
+        {
+            player.Anim.SetBool(player.WalkingAnimationBool, true);
+            player.CurrentPlayerState = player.RollState;
+        }
+
         public void UpdateState()
         {
             MovePlayer();
@@ -44,6 +50,10 @@ namespace PlayerLogic
             if (Vector2.zero == player.MovementVector)
             {
                 ToIdleState();
+            }
+            if (Vector2.zero != player.PositionToRollTo)
+            {
+                ToRollState();
             }
         }
 

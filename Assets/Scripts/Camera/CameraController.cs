@@ -1,8 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Tiled2Unity;
-using System;
-using UnityStandardAssets.CrossPlatformInput;
 using EnemyAI;
 
 

@@ -119,6 +119,7 @@
     <Compile Include="Assets\Scripts\Player\IdleState.cs" />
     <Compile Include="Assets\Scripts\Player\MoveState.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerStateHandler.cs" />
+    <Compile Include="Assets\Scripts\Player\RollState.cs" />
     <Compile Include="Assets\Scripts\UI\CombatText.cs" />
     <Compile Include="Assets\Scripts\UI\HealthBarConrtoller.cs" />
     <Compile Include="Assets\Scripts\UI\ScreenFader.cs" />
