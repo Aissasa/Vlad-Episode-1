@@ -240,7 +240,7 @@ public class EnemyController : GenericCharacterController
             {
                 if (ObstacleFinder.Instance.CheckObstacles(gameObject, startPos, endPos, unwalkableLayer, out colliderPosition))
                 {
-                    Vector2 middle = DirectionAndDistanceCalculator.GetMiddleOfVector(startPos, endPos);
+                    Vector2 middle = DirectionAndDistanceCalculator.GetMiddlePosOfVector(startPos, endPos);
                     Vector2 newPoint;
                     if (colliderPosition.IsAbove(middle))
                     {

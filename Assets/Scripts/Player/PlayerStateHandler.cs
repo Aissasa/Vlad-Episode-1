@@ -44,13 +44,12 @@ namespace PlayerLogic
             get { return "walking"; }
         }
 
-        public Vector2 PositionToRollTo { get; set; }
-
         public SpriteRenderer SpriteRend { get; protected set; }
 
         public bool IsFacingRight { get; set; }
 
         public Vector2 MovementVector { get;  set; }
+        public Vector2 NextPositionToRollTo { get; set; }
         public bool IsAttacking { get; set; }
 
         public BasicStats PlayerStats { get; protected set; }
@@ -75,13 +74,6 @@ namespace PlayerLogic
         [SerializeField]
         private float playerAttackRange;
         public float PlayerAttackRange { get { return playerAttackRange; } }
-
-        [Space(5)]
-        [Range(0.1f, 10f)]
-        [SerializeField]
-        private float playerAttackReach;
-        public float PlayerAttackReach { get { return playerAttackRange; } }
-
 
         [Space(10)]
         [SerializeField]
@@ -194,15 +186,24 @@ namespace PlayerLogic
             }
             int damage = DamageCalculationManager.Instance.CalculateInflictedDamage(attackerStats, PlayerStats, out outcome);
             UpdateHealth(damage);
-            DamagedPlayer(gameObject, damage, outcome);
-            HitPlayer(new Health(PlayerStats));
+            if (DamagedPlayer != null)
+            {
+                DamagedPlayer(gameObject, damage, outcome);
+            }
+            if (HitPlayer!=null)
+            {
+                HitPlayer(new Health(PlayerStats));
+            }
             if (PlayerStats.CurrentHealth <= 0)
             {
                 isDead = true;
                 Debug.Log("Player is dead !");
                 Anim.SetTrigger(DyingAnimationTrigger);
                 enabled = false;
-                DeadPlayer(gameObject);
+                if (DeadPlayer!=null)
+                {
+                    DeadPlayer(gameObject);
+                }
             }
         }
 
@@ -238,7 +239,7 @@ namespace PlayerLogic
             // initiate roll only when in those states
             if (CurrentPlayerState == IdleState || CurrentPlayerState == MoveState)
             {
-                PositionToRollTo = transform.Get2DPosition() + direction;
+                NextPositionToRollTo = transform.Get2DPosition() + direction;
             }
         }
 

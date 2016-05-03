@@ -22,7 +22,7 @@ namespace PlayerLogic
         public void ResetVariables()
         {
             player.Anim.SetBool(player.WalkingAnimationBool, false);
-            player.PositionToRollTo = Vector2.zero;
+            player.NextPositionToRollTo = Vector2.zero;
             rollTargetPosition = Vector2.zero;
             rollTimer = player.RollDuration;
             player.PlayerStats.DodgeRate -= player.RollDodgeBuff;
@@ -70,7 +70,7 @@ namespace PlayerLogic
 
         protected void Roll()
         {
-            LinearMouvement.Instance.MoveTo(player.gameObject, player.PositionToRollTo, player.PlayerSpeed * player.RollBurst);
+            LinearMouvement.Instance.MoveTo(player.gameObject, player.NextPositionToRollTo, player.PlayerSpeed * player.RollBurst);
             player.InvokeAfterImage();
             rollTimer -= Time.deltaTime;
         }

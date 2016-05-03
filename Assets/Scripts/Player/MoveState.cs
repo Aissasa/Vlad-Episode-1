@@ -51,7 +51,7 @@ namespace PlayerLogic
             {
                 ToIdleState();
             }
-            if (Vector2.zero != player.PositionToRollTo)
+            if (Vector2.zero != player.NextPositionToRollTo)
             {
                 ToRollState();
             }

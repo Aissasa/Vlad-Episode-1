@@ -2,8 +2,8 @@
 using System.Collections;
 using System;
 
-public static class DirectionAndDistanceCalculator {
-
+public static class DirectionAndDistanceCalculator
+{
 
     public static Vector2 CalculateDirection(Vector2 startPos, Vector2 targetPos)
     {
@@ -22,7 +22,12 @@ public static class DirectionAndDistanceCalculator {
         return new Vector2(Math.Sign(targetPos.x - startPos.x), Math.Sign(targetPos.y - startPos.y));
     }
 
-    public static Vector2 GetMiddleOfVector(Vector2 startPos, Vector2 targetPos)
+    public static float CalculateAngle(Vector2 startPos, Vector2 targetPos)
+    {
+        return Mathf.Atan2(targetPos.y - startPos.y, targetPos.x - startPos.x);
+    }
+
+    public static Vector2 GetMiddlePosOfVector(Vector2 startPos, Vector2 targetPos)
     {
         return new Vector2((startPos.x + targetPos.x) / 2, (startPos.y + targetPos.y) / 2);
     }

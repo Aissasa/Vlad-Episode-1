@@ -105,6 +105,8 @@ namespace EnemyAI
         [HideInInspector]
         public float attackRange;
         [HideInInspector]
+        public float attackReach;
+        [HideInInspector]
         public float chasingRange;
         [HideInInspector]
         public float pursuitRange;
@@ -126,12 +128,6 @@ namespace EnemyAI
                 patrolWayPoints = new Transform[] { spawnPosition };
                 // note : maybe add another point by raycasting (walkable)
             }
-            //else
-            //{
-            //    List<Transform> list = new List<Transform>(patrolWaypoints);
-            //    list.Add(spawnPosition);
-            //    patrolWaypoints = list.ToArray();
-            //}
         }
 
         protected void Start()
@@ -216,18 +212,23 @@ namespace EnemyAI
             }
             int damage = DamageCalculationManager.Instance.CalculateInflictedDamage(attackerStats, EnemyStats, out outcome);
             UpdateHealth(damage);
-            DamagedEnemy(gameObject, damage, outcome);
-            if (outcome == BasicStats.AttackOutcome.Hit || outcome == BasicStats.AttackOutcome.Crit)
+            if (DamagedEnemy != null)
+            {
+                DamagedEnemy(gameObject, damage, outcome);
+            }
+            if (HitEnemy != null && (outcome == BasicStats.AttackOutcome.Hit || outcome == BasicStats.AttackOutcome.Crit))
             {
                 HitEnemy();
             }
             if (EnemyStats.CurrentHealth <= 0)
             {
                 isDead = true;
-                Debug.Log(gameObject.name +" is dead !");
                 Anim.SetTrigger(DyingAnimationTrigger);
                 enabled = false;
-                DeadEnemy(gameObject);
+                if (DeadEnemy!= null)
+                {
+                    DeadEnemy(gameObject);
+                }
             }
             else
             {
@@ -244,9 +245,12 @@ namespace EnemyAI
 
         protected void DamagePlayer()
         {
-            // urgent : the distance can change the dodge odds
-            player.GetComponent<IDamageable>().TakeDamage(EnemyStats);
+            if (PlayerInAttackReach())
+            {
+                player.GetComponent<IDamageable>().TakeDamage(EnemyStats);
+            }
         }
+
         protected void OnDrawGizmos()
         {
             if (CurrentEnemyState == null)
@@ -258,6 +262,11 @@ namespace EnemyAI
                 CurrentEnemyState.DrawGizmos();
             }
 
+        }
+
+        protected bool PlayerInAttackReach()
+        {
+            return DirectionAndDistanceCalculator.CalculateDistance(transform.Get2DPosition(), player.Get2DPosition()) < attackReach;
         }
 
         protected void Spawn()

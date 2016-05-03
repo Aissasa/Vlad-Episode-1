@@ -23,6 +23,7 @@ public class LinearMouvement : IMouvement
         }
     }
 
+    // for the player
     public void MoveTowardsWithKeys(GameObject go, Vector2 movementVector, float speed)
     {
         Rigidbody2D rb2d = go.GetComponent<Rigidbody2D>();
@@ -37,18 +38,21 @@ public class LinearMouvement : IMouvement
             rb2d.MovePosition(rb2d.position + movementVector * Time.deltaTime * diagonalSpeed);
         }
     }
-
+    
+    // for the player
     public void MoveTowardsWithJoyStick(GameObject go, Vector2 movementVector, float speed)
     {
         Rigidbody2D rb2d = go.GetComponent<Rigidbody2D>();
         rb2d.MovePosition(rb2d.position + movementVector * Time.deltaTime * speed);
     }
 
+    // for the moving objects(exp: combatText)
     public void MoveTowards(Transform trans, Vector2 movementVector, float speed)
     {
         trans.Translate( movementVector * Time.deltaTime * speed);
     }
 
+    // for the enemies
     public void MoveTo(GameObject go, Vector2 targetPos, float speed)
     {
         Transform trans = go.GetComponent<Transform>();

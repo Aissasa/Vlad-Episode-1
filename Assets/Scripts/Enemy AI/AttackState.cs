@@ -17,7 +17,7 @@ namespace EnemyAI
 
         public void DrawGizmos()
         {
-            Debug.Log("Nothing to draw in attack");
+            //Debug.Log("Nothing to draw in attack");
         }
 
         public void ResetVariables()

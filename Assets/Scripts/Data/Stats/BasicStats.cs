@@ -32,7 +32,7 @@ public class BasicStats
 
     public static BasicStats PlayerTest()
     {
-        return new BasicStats(100, 50, 25, 40, 100, 120, 110, 50, 50);
+        return new BasicStats(1500, 50, 25, 40, 100, 120, 110, 50, 50);
     }
 
     public static BasicStats EnemyTest()

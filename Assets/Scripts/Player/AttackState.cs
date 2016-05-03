@@ -60,6 +60,21 @@ namespace PlayerLogic
             }
         }
 
+        protected bool IsFacing(Vector2 playerPos, Vector2 enemyPos)
+        {
+            float angle = DirectionAndDistanceCalculator.CalculateAngle(playerPos, enemyPos);
+            float playerDirection = player.IsFacingRight ? 0 : Mathf.PI; // this will depend on the blend tree
+
+            float rawfinal = playerDirection - angle; 
+            float final = Mathf.Abs(rawfinal);
+            if (Mathf.Abs(rawfinal - 2 * Mathf.PI) < final)
+            {
+                final = Mathf.Abs(rawfinal - 2 * Mathf.PI);
+            }
+            Debug.Log(final);
+            return final < Mathf.PI / 2;
+        }
+
         protected void LaunchAttack()
         {
             if (!player.IsAttacking || player.InBlockingAnimation())
@@ -70,20 +85,21 @@ namespace PlayerLogic
             player.Anim.SetTrigger(player.AttackingAnimationTrigger);
             AttackTargets = GetSurroundingDamageableCharacters(); // new add getbreakableobjects with unwalkable layer and then breakable tag
             AttackTargets.Remove(player.gameObject);
+            LookAtNearestEnemy(AttackTargets);
 
-            //foreach (var character in hitCharacters)
-            //{
-            //    character.GetComponent<IDamageable>().TakeDamage(player.PlayerStats);
-            //}
-
-            // todo : lookat nearest enemy
+            // new : change this when adding the other directions, aka vlad
+            GameObject[] stub = AttackTargets.ToArray();
+            foreach (var enemy in stub)
+            {
+                if (!IsFacing(player.transform.Get2DPosition(), enemy.transform.Get2DPosition()))
+                {
+                    AttackTargets.Remove(enemy);
+                }
+            }
         }
-        // urgent : think of facing nearest enemy when attacking
+
         protected List<GameObject> GetSurroundingDamageableCharacters()
         {
-            //urgent : think attack vector
-            //ps : test
-            //RaycastHit2D[] array = Physics2D.CircleCastAll(player.transform.Get2DPosition(), 0.2f, player.movementVector, Mathf.Infinity, player.damageableLayer);
             RaycastHit2D[] array = Physics2D.CircleCastAll(player.transform.Get2DPosition(), player.PlayerAttackRange, Vector2.zero, Mathf.Infinity, player.DamageableLayer);
             List<GameObject> gos = new List<GameObject>();
             foreach (var item in array)
@@ -94,12 +110,32 @@ namespace PlayerLogic
             return gos;
         }
 
-        // new :  think about player direction in raycasting
-        protected bool IsFacingEnemy(Transform enemy)
+        protected void LookAtNearestEnemy(List<GameObject> enemies)
         {
-            return true;
-        }
+            if (enemies.Count < 1)
+            {
+                return;
+            }
 
+            float minDistance = DirectionAndDistanceCalculator.CalculateDistance(player.transform.Get2DPosition(), enemies[0].transform.Get2DPosition());
+            int nearestEnemyIndex = 0;
+
+            for (int i = 1; i < enemies.Count; i++)
+            {
+                if (DirectionAndDistanceCalculator.CalculateDistance(player.transform.Get2DPosition(), enemies[i].transform.Get2DPosition()) < minDistance)
+                {
+                    minDistance = DirectionAndDistanceCalculator.CalculateDistance(player.transform.Get2DPosition(), enemies[i].transform.Get2DPosition());
+                    nearestEnemyIndex = i;
+                }
+            }
+
+            Vector2 enemyPos = enemies[nearestEnemyIndex].transform.Get2DPosition();
+
+            if ((player.transform.Get2DPosition().IsAtLeftOf(enemyPos) && !player.IsFacingRight) || (!player.transform.Get2DPosition().IsAtLeftOf(enemyPos) && player.IsFacingRight))
+            {
+                player.Flip();
+            }
+        }
     }
 }
 
