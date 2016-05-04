@@ -27,10 +27,17 @@ public class CameraController : MonoBehaviour
     private float shakeDuration;
     [Range(0, 2)]
     [SerializeField]
-    private float shakeMagnitude;
+    private float shakeBaseMagnitude;
     [Range(1, 5)]
     [SerializeField]
     private float shakeSpeed;
+    [Range(1, 3)]
+    [SerializeField]
+    private float critShakeMultiplier;
+
+    [Space(10)]
+    [SerializeField]
+    ParticleSystem critEffect;
 
     Camera cam;
     Vector3 playerFirstPosition;
@@ -50,6 +57,7 @@ public class CameraController : MonoBehaviour
         cameraSpacer = new Vector3(0, 0, -10);
 
         transform.position = playerFirstPosition + cameraSpacer;
+        critEffect.transform.localPosition = new Vector3(0, 0, -transform.position.z);
 
         mapTopRight = GameManager.Instance.GetMapTopRightPosition();
         mapBottomLeft = GameManager.Instance.GetMapBottomLeftPosition();
@@ -70,17 +78,27 @@ public class CameraController : MonoBehaviour
     void OnEnable()
     {
         EnemyStateHandler.HitEnemy += ShakeForHit;
+        EnemyStateHandler.HitEnemy += CritEffectLaunch;
     }
 
     void OnDisable()
     {
         EnemyStateHandler.HitEnemy -= ShakeForHit;
+        EnemyStateHandler.HitEnemy -= CritEffectLaunch;
     }
 
-    private void ShakeForHit()
+    private void ShakeForHit(bool crit)
     {
         StopAllCoroutines();
-        StartCoroutine(Shake());
+        StartCoroutine(Shake(crit));
+    }
+
+    private void CritEffectLaunch(bool crit)
+    {
+        if (crit)
+        {
+            critEffect.Play();
+        }
     }
 
     private void ResetCamPosition()
@@ -178,8 +196,9 @@ public class CameraController : MonoBehaviour
 
     }
 
-    IEnumerator Shake()
+    IEnumerator Shake(bool crit)
     {
+        float magnitude = crit ? shakeBaseMagnitude * critShakeMultiplier : shakeBaseMagnitude;
         float elapsed = 0.0f;
 
         Vector3 originalCamPos = cam.transform.position;
@@ -203,8 +222,8 @@ public class CameraController : MonoBehaviour
             //float x = Mathf.PerlinNoise(alpha, 0);
             //float y = Mathf.PerlinNoise(0, alpha);
 
-            x *= shakeMagnitude * damper;
-            y *= shakeMagnitude * damper;
+            x *= magnitude * damper;
+            y *= magnitude * damper;
 
             cam.transform.position = new Vector3(originalCamPos.x + x, originalCamPos.y + y, originalCamPos.z);
 

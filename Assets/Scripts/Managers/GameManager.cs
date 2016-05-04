@@ -3,6 +3,7 @@ using System.Collections;
 using PlayerLogic;
 using EnemyAI;
 using System;
+using System.Collections.Generic;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -60,6 +61,7 @@ public class GameManager : Singleton<GameManager>
 
     void DeadEnemy(GameObject go)
     {
+        go.layer = LayerMask.NameToLayer("Default");
         Destroy(go, 5);
     }
 

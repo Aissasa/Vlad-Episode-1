@@ -197,7 +197,6 @@ namespace PlayerLogic
             if (PlayerStats.CurrentHealth <= 0)
             {
                 isDead = true;
-                Debug.Log("Player is dead !");
                 Anim.SetTrigger(DyingAnimationTrigger);
                 enabled = false;
                 if (DeadPlayer!=null)

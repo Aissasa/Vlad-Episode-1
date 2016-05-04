@@ -10,7 +10,7 @@ namespace EnemyAI
         public delegate void DeadEnemyAction(GameObject go);
         public static event DeadEnemyAction DeadEnemy;
 
-        public delegate void HitEnemyAction();
+        public delegate void HitEnemyAction(bool crit);
         public static event HitEnemyAction HitEnemy;
 
         public delegate void EnemyDamagedAction(GameObject enemy, int damage, BasicStats.AttackOutcome outcome);
@@ -216,9 +216,16 @@ namespace EnemyAI
             {
                 DamagedEnemy(gameObject, damage, outcome);
             }
-            if (HitEnemy != null && (outcome == BasicStats.AttackOutcome.Hit || outcome == BasicStats.AttackOutcome.Crit))
+            if (HitEnemy != null )
             {
-                HitEnemy();
+                if (outcome == BasicStats.AttackOutcome.Hit)
+                {
+                    HitEnemy(false);
+                }
+                if (outcome == BasicStats.AttackOutcome.Crit)
+                {
+                    HitEnemy(true);
+                }
             }
             if (EnemyStats.CurrentHealth <= 0)
             {

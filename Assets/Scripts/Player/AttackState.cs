@@ -71,7 +71,6 @@ namespace PlayerLogic
             {
                 final = Mathf.Abs(rawfinal - 2 * Mathf.PI);
             }
-            Debug.Log(final);
             return final < Mathf.PI / 2;
         }
 
