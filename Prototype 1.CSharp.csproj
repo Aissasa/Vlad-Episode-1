@@ -84,7 +84,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\NotMyAssets\SimpleParticlePack\Scripts\ParticleTester.cs" />
     <Compile Include="Assets\Scripts\Camera\CameraController.cs" />
     <Compile Include="Assets\Scripts\Characters Controllers\EnemyController.cs" />
     <Compile Include="Assets\Scripts\Characters Controllers\GenericCharacterController.cs" />
@@ -103,6 +102,7 @@
     <Compile Include="Assets\Scripts\Managers\DamageCalculationManager.cs" />
     <Compile Include="Assets\Scripts\Managers\GameManager.cs" />
     <Compile Include="Assets\Scripts\Managers\RenderingManager.cs" />
+    <Compile Include="Assets\Scripts\Managers\SoundManager.cs" />
     <Compile Include="Assets\Scripts\Map Contollers\Warper.cs" />
     <Compile Include="Assets\Scripts\Mouvement\BezierPath.cs" />
     <Compile Include="Assets\Scripts\Mouvement\IMouvement.cs" />

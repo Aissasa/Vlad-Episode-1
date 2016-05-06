@@ -61,7 +61,7 @@ public class GameManager : Singleton<GameManager>
 
     void DeadEnemy(GameObject go)
     {
-        go.layer = LayerMask.NameToLayer("Default");
+        go.layer = LayerMask.NameToLayer("DeadCharacters");
         Destroy(go, 5);
     }
 

@@ -75,6 +75,7 @@ namespace PlayerLogic
         private float playerAttackRange;
         public float PlayerAttackRange { get { return playerAttackRange; } }
 
+        [Header("Roll parameters:")]
         [Space(10)]
         [SerializeField]
         [Range(0.1f, 1)]
@@ -90,6 +91,32 @@ namespace PlayerLogic
         [Range(20, 200)]
         private float rollDodgeBuff;
         public float RollDodgeBuff { get { return rollDodgeBuff; } }
+
+        [Header("Reaction audio clips:")]
+        [Space(10)]
+        [SerializeField]
+        protected AudioClip deathSound;
+        [SerializeField]
+        protected AudioClip hitSound1;
+        [SerializeField]
+        protected AudioClip hitSound2;
+        [SerializeField]
+        protected AudioClip hitSound3;
+
+        [Header("Combat audio clips:")]
+        [Space(10)]
+        [SerializeField]
+        protected AudioClip attackSound1;
+        [SerializeField]
+        protected AudioClip attackSound2;
+        [SerializeField]
+        protected AudioClip attackSound3;
+        [SerializeField]
+        protected AudioClip swooshSound1;
+        public AudioClip SwooshSound1 { get { return swooshSound1; } }
+        [SerializeField]
+        protected AudioClip swooshSound2;
+        public AudioClip SwooshSound2 { get { return swooshSound1; } }
 
 
         // todo : add attack cooldown
@@ -193,11 +220,16 @@ namespace PlayerLogic
             if (HitPlayer!=null)
             {
                 HitPlayer(new Health(PlayerStats));
+                if (outcome == BasicStats.AttackOutcome.Crit)
+                {
+                    SoundManager.instance.RandomizeReactionSfx(true, hitSound1, hitSound2, hitSound3);
+                }
             }
             if (PlayerStats.CurrentHealth <= 0)
             {
                 isDead = true;
                 Anim.SetTrigger(DyingAnimationTrigger);
+                SoundManager.instance.PlaySingleReactionSfx(true, deathSound);
                 enabled = false;
                 if (DeadPlayer!=null)
                 {
@@ -213,6 +245,13 @@ namespace PlayerLogic
                 Debug.Log("Not in attack state");
                 return;
             }
+
+            if (AttackState.AttackTargets.Count < 1 )
+            {
+                return;
+            }
+
+            SoundManager.instance.RandomizeCombatSfx(true, attackSound1, attackSound2, attackSound3);
 
             foreach (var character in AttackState.AttackTargets)
             {
@@ -270,12 +309,12 @@ namespace PlayerLogic
             //Anim.SetFloat("y", MovementVector.y);
         }
 
-        void OnEnable()
+        protected void OnEnable()
         {
             Joystick.Roll += RollAction;
         }
 
-        void OnDisable()
+        protected void OnDisable()
         {
             Joystick.Roll -= RollAction;
         }
@@ -319,7 +358,6 @@ namespace PlayerLogic
         {
             Invoke("SpawnTrailPart", 0);
         }
-
 
     }
 

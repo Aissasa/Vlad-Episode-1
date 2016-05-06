@@ -37,7 +37,7 @@ public class BasicStats
 
     public static BasicStats EnemyTest()
     {
-        return new BasicStats(500, 10, 10, 20, 60, 100, 100, 10, 10);
+        return new BasicStats(500, 10, 10, 20, 60, 100, 100, 30, 10);
     }
 
     public enum AttackOutcome

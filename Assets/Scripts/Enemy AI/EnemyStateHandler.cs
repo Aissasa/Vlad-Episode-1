@@ -54,53 +54,60 @@ namespace EnemyAI
 
         [Header("For Debugging Purposes: ")]
         [SerializeField]
-        private bool displayPath;           // display path gizmos or not
+        protected bool displayPath;           // display path gizmos or not
 
-
-        [Space(10)]
         [Header("The unwalkable layer: ")]
+        [Space(10)]
         [SerializeField]
-        private LayerMask unwalkableLayer;
+        protected LayerMask unwalkableLayer;
         public LayerMask UnwalkableLayer { get { return unwalkableLayer; } }
 
-
-        [Space(10)]
         [Header("Key positions: ")]
+        [Space(10)]
         [SerializeField]
-        private Transform player;
+        protected Transform player;
         public Transform Player { get { return player; } }
 
         [SerializeField]
         private Transform spawnPosition;     
 
         [SerializeField]
-        private Transform[] patrolWayPoints;
+        protected Transform[] patrolWayPoints;
         public Transform[] PatrolWayPoints { get { return patrolWayPoints; } }
 
-
-        [Space(10)]
         [Header("Speed and delays: ")]
+        [Space(10)]
         [Range(0.1f, 10f)]
         [SerializeField]
-        private float characterSpeed;  
+        protected float characterSpeed;  
         public float CharacterSpeed { get { return characterSpeed; } }
-
 
         [Space(5)]
         [Range(0.1f, 10f)]
         [SerializeField]
-        private float patrolDelay;       // how much to wait in patrol point
+        protected float patrolDelay;       // how much to wait in patrol point
         public float PatrolDelay { get { return patrolDelay; } }
 
         [Range(0.5f, 5)]
         [SerializeField]
-        private float lookOutDelay;          // look out wait time
+        protected float lookOutDelay;          // look out wait time
         public float LookOutDelay { get { return lookOutDelay; } }
 
         [Range(0.5f, 10f)]
         [SerializeField]
-        private float attackDelay;       // delay between attacks
+        protected float attackDelay;       // delay between attacks
         public float AttackDelay { get { return attackDelay; } }
+
+        [Header("Reaction audio clips:")]
+        [Space(10)]
+        [SerializeField]
+        protected AudioClip deathSound;
+        [SerializeField]
+        protected AudioClip hitSound1;
+        [SerializeField]
+        protected AudioClip hitSound2;
+        [SerializeField]
+        protected AudioClip hitSound3;
 
         [HideInInspector]
         public float attackRange;
@@ -224,6 +231,7 @@ namespace EnemyAI
                 }
                 if (outcome == BasicStats.AttackOutcome.Crit)
                 {
+                    SoundManager.instance.RandomizeReactionSfx(false, hitSound1, hitSound2, hitSound3);
                     HitEnemy(true);
                 }
             }
@@ -231,6 +239,7 @@ namespace EnemyAI
             {
                 isDead = true;
                 Anim.SetTrigger(DyingAnimationTrigger);
+                SoundManager.instance.PlaySingleReactionSfx(false, deathSound);
                 enabled = false;
                 if (DeadEnemy!= null)
                 {

@@ -82,6 +82,7 @@ namespace PlayerLogic
             }
 
             player.Anim.SetTrigger(player.AttackingAnimationTrigger);
+            SoundManager.instance.RandomizeCombatSfx(true, player.SwooshSound1, player.SwooshSound2);
             AttackTargets = GetSurroundingDamageableCharacters(); // new add getbreakableobjects with unwalkable layer and then breakable tag
             AttackTargets.Remove(player.gameObject);
             LookAtNearestEnemy(AttackTargets);

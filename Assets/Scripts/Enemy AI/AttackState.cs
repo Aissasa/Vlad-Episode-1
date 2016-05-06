@@ -60,7 +60,7 @@ namespace EnemyAI
             if (attackTimer <= 0)
             {
                 enemy.Anim.SetTrigger(enemy.AttackingAnimationTrigger);
-                //enemy.Player.GetComponent<IDamageable>().TakeDamage(enemy.EnemyStats);
+                //SoundManager
                 attackTimer = enemy.AttackDelay;
             }
             else
