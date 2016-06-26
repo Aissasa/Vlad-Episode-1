@@ -70,7 +70,7 @@ namespace PlayerLogic
 
         protected void Roll()
         {
-            LinearMouvement.Instance.MoveTo(player.gameObject, player.NextPositionToRollTo, player.PlayerSpeed * player.RollBurst);
+            LinearMovement.Instance.MoveTo(player.gameObject, player.NextPositionToRollTo, player.PlayerSpeed * player.RollBurst);
             player.InvokeAfterImage();
             rollTimer -= Time.deltaTime;
         }

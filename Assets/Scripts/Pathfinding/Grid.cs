@@ -15,7 +15,8 @@ public class Grid : MonoBehaviour
     private Vector2 gridWorldSize;
     public Vector2 GridWorldSize { get { return gridWorldSize; } }
     [SerializeField]
-    private float nodeRadius;
+    [Range(0.01f, 5)]
+    private float nodeRadius = 0.15f;
     Node[,] grid;
 
     Vector2 worldBottomLeft;

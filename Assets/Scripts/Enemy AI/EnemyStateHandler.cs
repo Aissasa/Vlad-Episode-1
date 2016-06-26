@@ -50,8 +50,6 @@ namespace EnemyAI
         public bool IsFacingRight { get; set; }         // bool to know which direction the character is facing
         public SpriteRenderer SpriteRend { get; protected set; }
 
-        public BasicStats EnemyStats { get; protected set; }
-
         [Header("For Debugging Purposes: ")]
         [SerializeField]
         protected bool displayPath;           // display path gizmos or not
@@ -74,6 +72,10 @@ namespace EnemyAI
         [SerializeField]
         protected Transform[] patrolWayPoints;
         public Transform[] PatrolWayPoints { get { return patrolWayPoints; } }
+
+        [SerializeField]
+        protected BasicStats enemyStats;
+        public BasicStats EnemyStats { get { return enemyStats; } protected set { enemyStats = value; } }
 
         [Header("Speed and delays: ")]
         [Space(10)]
@@ -140,7 +142,7 @@ namespace EnemyAI
         protected void Start()
         {
             CurrentEnemyState = PatrolState;
-            EnemyStats = BasicStats.EnemyTest();
+            //enemyStats = BasicStats.EnemyTest();
             if (SpriteRend.flipX)
                 IsFacingRight = false;
             else

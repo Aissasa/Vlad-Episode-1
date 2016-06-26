@@ -71,7 +71,7 @@ namespace PlayerLogic
             FlipIfNeeded();
             player.Anim.SetBool(player.WalkingAnimationBool, true);
             //ps : change this to keys if needed
-            LinearMouvement.Instance.MoveTowardsWithJoyStick(player.gameObject, player.MovementVector, player.PlayerSpeed);
+            LinearMovement.Instance.MoveTowardsWithJoyStick(player.gameObject, player.MovementVector, player.PlayerSpeed);
         }
     }
 }

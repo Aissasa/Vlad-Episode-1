@@ -18,7 +18,7 @@ public class CombatText : MonoBehaviour
 
     void Update()
     {
-        LinearMouvement.Instance.MoveTowards(transform, direction, textSpeed);
+        LinearMovement.Instance.MoveTowards(transform, direction, textSpeed);
     }
 
     public void SetTextAttributs(Vector2 direction, float textSpeed, float fadeDelay)

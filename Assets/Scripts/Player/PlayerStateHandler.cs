@@ -52,7 +52,6 @@ namespace PlayerLogic
         public Vector2 NextPositionToRollTo { get; set; }
         public bool IsAttacking { get; set; }
 
-        public BasicStats PlayerStats { get; protected set; }
 
         [SerializeField]
         private Transform playerSpawnPosition;
@@ -69,14 +68,21 @@ namespace PlayerLogic
         public float PlayerSpeed { get { return playerSpeed; } }
 
         // todo : may change depending on the weapon rather than here
-        [Space(5)]
+        [Space(2.5f)]
         [Range(0.1f, 10f)]
         [SerializeField]
         private float playerAttackRange;
         public float PlayerAttackRange { get { return playerAttackRange; } }
 
+
+        [Space(5)]
+        [SerializeField]
+        protected BasicStats playerStats;
+        public BasicStats PlayerStats { get { return playerStats; } protected set { playerStats = value; } }
+
+
         [Header("Roll parameters:")]
-        [Space(10)]
+        [Space(5)]
         [SerializeField]
         [Range(0.1f, 1)]
         private float rollDuration;
@@ -93,7 +99,7 @@ namespace PlayerLogic
         public float RollDodgeBuff { get { return rollDodgeBuff; } }
 
         [Header("Reaction audio clips:")]
-        [Space(10)]
+        [Space(5)]
         [SerializeField]
         protected AudioClip deathSound;
         [SerializeField]
@@ -104,7 +110,7 @@ namespace PlayerLogic
         protected AudioClip hitSound3;
 
         [Header("Combat audio clips:")]
-        [Space(10)]
+        [Space(5)]
         [SerializeField]
         protected AudioClip attackSound1;
         [SerializeField]
@@ -134,7 +140,7 @@ namespace PlayerLogic
             MoveState = new MoveState(this);
             RollState = new RollState(this);
 
-            PlayerStats = BasicStats.PlayerTest();
+            //playerStats = BasicStats.PlayerTest();
         }
 
         protected void Start()

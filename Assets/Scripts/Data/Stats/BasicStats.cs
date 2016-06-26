@@ -5,29 +5,70 @@ using System;
 [Serializable]
 public class BasicStats
 {
-    public int MaxHealth { get; set; }
-    public int CurrentHealth { get; set; }
-    public int Defense { get; set; }
-    public float DodgeRate { get; set; }
-    public float BlockRate { get; set; }
-    public int Attack { get; set; }
-    public float HitRate { get; set; }
-    public float BlockBreakRate { get; set; }
-    public float CritRate { get; set; }
-    public float CritDamage { get; set; }
+    public int MaxHealth { get {return maxHealth; } set { maxHealth = value; } }
+    public int CurrentHealth { get { return currentHealth; } set { currentHealth = value; } }
+    public int Defense { get { return defense; } set { defense = value; } }
+    public float DodgeRate { get { return dodgeRate; } set { dodgeRate = value; } }
+    public float BlockRate { get { return blockRate; } set { blockRate = value; } }
+    public int Attack { get { return attack; } set { attack = value; } }
+    public float HitRate { get { return hitRate; } set { hitRate = value; } }
+    public float BlockBreakRate { get { return blockBreakRate; } set { blockBreakRate = value; } }
+    public float CritRate { get { return critRate; } set { critRate = value; } }
+    public float CritDamage { get { return critDamage; } set { critDamage = value; } }
+
+    [SerializeField]
+    [Range(1, 10000)]
+    private int maxHealth;
+
+    [SerializeField]
+    [Range(1, 10000)]
+    private int currentHealth;
+
+    [SerializeField]
+    [Range(1, 5000)]
+    private int defense;
+
+    [SerializeField]
+    [Range(0, 100)]
+    private float dodgeRate;
+
+    [SerializeField]
+    [Range(0, 100)]
+    private float blockRate;
+
+    [SerializeField]
+    [Range(0, 5000)]
+    private int attack;
+
+    [SerializeField]
+    [Range(100, 500)]
+    private float hitRate;
+
+    [SerializeField]
+    [Range(100, 300)]
+    private float blockBreakRate;
+
+    [SerializeField]
+    [Range(0, 100)]
+    private float critRate;
+
+    [SerializeField]
+    [Range(0, 500)]
+    private float critDamage;
+
 
     public BasicStats(int maxHealth, int defense, float dodgeRate, float blockRate, int attack, float hitRate, float blockBreakRate, float critRate, float critDamage)
     {
-        MaxHealth = maxHealth;
-        CurrentHealth = MaxHealth;
-        Defense = defense;
-        DodgeRate = dodgeRate;
-        BlockRate = blockRate;
-        Attack = attack;
-        HitRate = hitRate;
-        BlockBreakRate = blockBreakRate;
-        CritRate = critRate;
-        CritDamage = critDamage;
+        this.maxHealth = maxHealth;
+        currentHealth = maxHealth;
+        this.defense = defense;
+        this.dodgeRate = dodgeRate;
+        this.blockRate = blockRate;
+        this.attack = attack;
+        this.hitRate = hitRate;
+        this.blockBreakRate = blockBreakRate;
+        this.critRate = critRate;
+        this.critDamage = critDamage;
     }
 
     public static BasicStats PlayerTest()
